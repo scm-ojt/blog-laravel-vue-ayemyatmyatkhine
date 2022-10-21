@@ -19,4 +19,16 @@ class CategoryController extends Controller
         $category->save();
         return response()->json(['successMessage' => 'Category created successfully']);
     }
+
+    public function getCategoryList(Request $request)
+    {
+        $category = Category::get();
+        return response()->json($category);
+    }
+
+    public function delete(Id $id)
+    {
+        Category::find($id)->delete();
+        return response()->json(['successMessage' => 'Category deleted successfully.']);
+    }
 }

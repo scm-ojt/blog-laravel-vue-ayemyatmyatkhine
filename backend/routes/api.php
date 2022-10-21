@@ -24,4 +24,8 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 Route::post('/post/create' ,[PostController::class , 'create']);
+Route::get('/post/list' , [PostController::class , 'getPostList']);
+Route::delete('/post/delete/{$id}' , [PostController::class , 'delete']);
 Route::post('/category/create' ,[CategoryController::class , 'create']);
+Route::get('/category/list' , [CategoryController::class , 'getCategoryList']);
+Route::delete('/category/delete/{$id}' , [CategoryController::class , 'delete']);

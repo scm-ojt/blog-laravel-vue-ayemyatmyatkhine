@@ -21,8 +21,20 @@ class PostController extends Controller
         $post->body = $request->description;
         $post->created_at = Date('Y-m-d');
         $post->save();
-        $categorys = $request->category_name;
-        $post->categories()->attach($categorys);
+        $categories = $request->category_name;
+        $post->categories()->attach($categories);
         return response()->json(['successMessage' => 'Post created successfully.']);
+    }
+
+    public function getPostList(Request $request)
+    {
+        $posts = Post::get();
+        return response()->json($posts);
+    }
+
+    public function delete(Id $id)
+    {
+        Post::find($id)->delete();
+        return response()->json(['successMessage' => 'Post deleted successfully']);
     }
 }
