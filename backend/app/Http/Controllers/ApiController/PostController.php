@@ -4,19 +4,21 @@ namespace App\Http\Controllers\ApiController;
 
 use App\Models\Post;
 use Illuminate\Http\Request;
+use App\Http\Requests\PostRequest;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Validator;
 
 class PostController extends Controller
 {
-    public function create(Request $request)
+    public function create(PostRequest $request)
     {
-        $validate = $request->validate([
-            'image' => 'max:100|mimes:jpeg,png,jpg,gif',
-            'title' => 'required|max:100',
-            'category_name' => 'required',
-            'description' => 'required'
-        ]);
-        Post::create($request->all());
-        return response()->json('success');
+        $post = new Post;
+        $post->user_id = 1;
+        $post->image = $request->image;
+        $post->title = $request->title;
+        $post->body = $request->description;
+        $post->created_at = Date('Y-m-d');
+        $post->save();
+        return response()->json(['successMessage' => 'Post created successfully.']);
     }
 }

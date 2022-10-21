@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ApiController\PostController;
+use App\Http\Controllers\ApiController\CategoryController;
 
 /*
 |--------------------------------------------------------------------------
@@ -18,4 +19,4 @@ Route::get('/', function () {
     //return view('welcome');
 });
 
-Route::post('/post/create' ,[PostController::class , 'create']);
+//Route::post('/post/create' ,[PostController::class , 'create']);
