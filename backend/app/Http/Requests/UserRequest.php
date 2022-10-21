@@ -27,7 +27,7 @@ class UserRequest extends FormRequest
     {
         return [
             'name' => 'required|max:100',
-            'email' => ['required','max:100','string','email','email:rfc,filter','regex:/(.+)@(.+)\.(.+)/i'],
+            'email' => ['required','max:100','string','unique:users','email','email:rfc,filter','regex:/(.+)@(.+)\.(.+)/i'],
             'password' => 'required|min:8|max:50',
             'confirm_password' => 'required|required_with:password|same:password|min:8|max:50'
         ];

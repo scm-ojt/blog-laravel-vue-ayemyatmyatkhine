@@ -5,7 +5,9 @@ namespace App\Http\Controllers\ApiController;
 use App\Models\User;
 use Illuminate\Http\Request;
 use App\Http\Requests\UserRequest;
+use App\Http\Requests\LoginRequest;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
@@ -23,5 +25,18 @@ class AuthController extends Controller
         $success['name'] = $user->name;
 
         return response()->json($success);
+    }
+
+    public function login(LoginRequest $request)
+    {
+        if (Auth::attempt(['email' => $request->email, 'password' => $request->password])) {
+            $user = Auth::user();
+            $success['token'] = $user->createToken('MyApp')->plainTextToken;
+            $success['name'] = $user->name;
+            return response()->json(['data' => $success , 'successMessage' => "User login successfully."]);
+        }
+        else {
+            return response()->json(['errorMessage' => "User email or password is incorrect."]);
+        }
     }
 }
