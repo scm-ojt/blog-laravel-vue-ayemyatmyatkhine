@@ -1,5 +1,9 @@
 <template>
-  <div>
-    <NuxtLayout />
-  </div>
+  <NuxtLayout :name="layout">
+    <NuxtPage />
+  </NuxtLayout>
 </template>
+
+<script setup>
+  const layout = "after-login";
+</script>
