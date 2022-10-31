@@ -27,30 +27,4 @@
     </div>
 </template>
 
-<style>
-.navbar-custom {
-    background-color: goldenrod;
-}
-.navbar-brand {
-    display: contents;
-}
-.nav-logo {
-    width: 70px;
-    height: 60px;
-}
-.header {
-    margin: 0;
-}
-.footer {
-    background-color: black;
-    color: goldenrod;
-    clear:both;
-    padding: 8px 0;
-    text-align: center;
-    margin: 0 auto;
-}
-.navbar-nav {
-    margin: 0 0 0 auto;
-   font-weight: bold;
-}
-</style>
+<style src="../assets/css/layout.css"></style>

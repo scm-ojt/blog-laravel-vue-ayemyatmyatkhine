@@ -17,7 +17,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id');
             $table->foreign('user_id')->references('id')->on('users');
-            $table->string('image');
+            $table->string('image')->nullable();
             $table->string('title');
             $table->longText('body');
             $table->timestamp('created_at')->nullable();

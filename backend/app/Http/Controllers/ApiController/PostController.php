@@ -6,6 +6,7 @@ use App\Models\Post;
 use App\Models\Category;
 use Illuminate\Http\Request;
 use App\Http\Requests\PostRequest;
+use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
@@ -21,15 +22,16 @@ class PostController extends Controller
         $post->body = $request->description;
         $post->created_at = Date('Y-m-d');
         $post->save();
-        $categories = $request->category_name;
+        $categories = $request->category;
         $post->categories()->attach($categories);
         return response()->json(['successMessage' => 'Post created successfully.']);
     }
 
     public function getPostList(Request $request)
     {
-        $posts = Post::get();
-        return response()->json($posts);
+        $posts = Post::with('user')
+                ->with('categories')->get();
+        return response()->json($posts);   
     }
 
     public function delete(Id $id)

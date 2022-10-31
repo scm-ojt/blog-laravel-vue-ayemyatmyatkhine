@@ -18,7 +18,7 @@ class PostRequest extends FormRequest
         return [
             'image' => 'max:100|mimes:jpeg,png,jpg,gif',
             'title' => 'required|max:100',
-            'category_name' => 'required',
+            'category' => 'required',
             'description' => 'required|max:255'
         ];
     }
