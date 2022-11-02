@@ -16,7 +16,8 @@ class PostController extends Controller
     public function create(PostRequest $request)
     {
         $post = new Post;
-        $post->user_id = Auth::user()->id;
+        // $post->user_id = Auth::user()->id;
+        $post->user_id = 1;
         $post->image = $request->image;
         $post->title = $request->title;
         $post->body = $request->description;

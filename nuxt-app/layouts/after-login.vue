@@ -10,10 +10,10 @@
                    <div class="collapse navbar-collapse" id="navbarSupportedContent">
                         <ul class="navbar-nav">
                             <li class="nav-item">
-                                <NuxtLink class="nav-link" to="/category/list">Category</NuxtLink>
+                                <NuxtLink class="nav-link" to="/category">Category</NuxtLink>
                             </li>
                             <li class="nav-item">
-                                <NuxtLink class="nav-link" to="/post/list">Post</NuxtLink>
+                                <NuxtLink class="nav-link" to="/post">Post</NuxtLink>
                             </li>
                             <div class="nav-item dropdown" id="nav-dropdown">
                                 <a class="dropdown-toggle nav-link" data-toggle="dropdown" href="">User</a>
@@ -26,7 +26,7 @@
                 </div>
             </nav>
         </Header>
-        <slot />
+        <slot/>
         <footer>
             <p class="footer">Copyright © 2022, All Rights Reserved.</p>
         </footer>

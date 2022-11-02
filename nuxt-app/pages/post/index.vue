@@ -2,7 +2,7 @@
     <div class="container mt-5 min-vh-75">
         <div class="header mb-5">
             <div class="create-btn">
-                <NuxtLink class="btn btn-create" to="/post/create"><font-awesome-icon :icon="['fas' , 'plus']" class="icon"/>&nbsp;Create</NuxtLink>
+                <NuxtLink class="btn btn-create" to="post/create"><font-awesome-icon :icon="['fas' , 'plus']" class="icon"/>&nbsp;Create</NuxtLink>
                 <button class="btn btn-import mx-2"><font-awesome-icon :icon="['fas', 'file-import']" class="icon"/>&nbsp;Import</button>
                 <button class="btn btn-export"><font-awesome-icon :icon="['fas' ,'file-export']" class="icon"/>&nbsp;Export</button>
             </div>
@@ -59,7 +59,7 @@
         layout: "after-login",
     });
     const runtimeConfig = useRuntimeConfig();   
-    const { data: posts } = await useAsyncData('posts', () => $fetch(runtimeConfig.public.apiBase + '/post/list'));
+    const {data:posts} = await useFetch(runtimeConfig.baseURL + '/post/list' , {initialCache: true});
 </script>
 
 <style src="../../assets/css/list.css"></style>

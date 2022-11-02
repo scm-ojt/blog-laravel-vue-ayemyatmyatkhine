@@ -19,7 +19,7 @@ use App\Http\Controllers\ApiController\CategoryController;
 Route::post('/register' , [AuthController::class , 'register']);
 Route::post('/login' , [AuthController::class , 'login']);
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
+Route::middleware('api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
@@ -29,3 +29,4 @@ Route::delete('/post/delete/{$id}' , [PostController::class , 'delete']);
 Route::post('/category/create' ,[CategoryController::class , 'create']);
 Route::get('/category/list' , [CategoryController::class , 'getCategoryList']);
 Route::delete('/category/delete/{$id}' , [CategoryController::class , 'delete']);
+Route::get('/categories' , [CategoryController::class , 'getCategory']);
