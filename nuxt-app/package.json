@@ -14,9 +14,13 @@
     "@fortawesome/free-solid-svg-icons": "^6.2.0",
     "@fortawesome/vue-fontawesome": "^3.0.1",
     "@nuxtjs/fontawesome": "^1.1.2",
+    "@popperjs/core": "^2.11.6",
+    "@vee-validate/rules": "^4.7.2",
     "@vueform/multiselect": "^2.5.6",
+    "@vuelidate/core": "^2.0.0",
+    "@vuelidate/validators": "^2.0.0",
     "bootstrap": "^5.2.2",
-    "nuxt3-select2": "^0.1.6",
+    "ohmyfetch": "^0.4.20",
     "vue-bs-modal": "^0.7.9"
   }
 }

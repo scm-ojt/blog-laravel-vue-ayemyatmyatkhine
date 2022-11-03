@@ -59,7 +59,7 @@
         layout: "after-login",
     });
     const runtimeConfig = useRuntimeConfig();   
-    const {data:posts} = await useFetch(runtimeConfig.baseURL + '/post/list' , {initialCache: true});
+    const {data:posts} = await useFetch(runtimeConfig.public.apiBase + '/post/list');
 </script>
 
 <style src="../../assets/css/list.css"></style>

@@ -1,22 +1,15 @@
-<script setup>
-    definePageMeta({
-        layout: "after-login",
-    });
-    const runtimeConfig = useRuntimeConfig()
-    const { data : categories} = await useFetch(runtimeConfig.baseURL + '/category/list')
-</script>
-
 <template>
     <div class="container mt-5 d-flex flex-row">
         <!-- create side -->
         <div class="create-side">
-            <component :is="component ? create : edit" />
+            <create v-if="page === 'create'" />
+            <edit v-if="page === 'edit'" />
         </div>
         <!-- list side -->
-        <div class="list-side">
+        <div class="list-side ms-5">
             <div class="header mb-4">
             <div class="create-btn">
-                <button type="button" class="btn btn-create" @click="component = create"><font-awesome-icon :icon="['fas' , 'plus']" class="icon"/>&nbsp;Create</button>
+                <button type="button" class="btn btn-create" @click="view('create')"><font-awesome-icon :icon="['fas' , 'plus']" class="icon"/>&nbsp;Create</button>
                 <button class="btn btn-import mx-2"><font-awesome-icon :icon="['fas', 'file-import']" class="icon"/>&nbsp;Import</button>
                 <button class="btn btn-export"><font-awesome-icon :icon="['fas' ,'file-export']" class="icon"/>&nbsp;Export</button>
             </div>
@@ -43,7 +36,7 @@
                         <td>{{ item.id }}</td>
                         <td>{{item.name}}</td>
                         <td class="action-btn">
-                            <button class="btn btn-primary btn-edit me-2"><font-awesome-icon :icon="['fas','pen-to-square']" /></button>
+                            <button class="btn btn-primary btn-edit me-2" @click="view('edit')"><font-awesome-icon :icon="['fas','pen-to-square']" /></button>
                             <button class="btn btn-danger btn-delete"><font-awesome-icon :icon="['fas', 'trash-can']" /></button>
                         </td>
                     </tr>
@@ -58,5 +51,19 @@
         </div>
     </div>
 </template>
+
+<script setup>
+    definePageMeta({
+        layout: "after-login",
+    });
+    const page = ref('create')
+    const runtimeConfig = useRuntimeConfig()
+    const { data : categories} = await useFetch(runtimeConfig.public.apiBase + '/category/list')
+    function view(name) {
+        page.value = name
+    }
+
+</script>
+
 
 <style src="../assets/css/list.css"></style>

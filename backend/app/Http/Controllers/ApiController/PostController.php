@@ -15,6 +15,7 @@ class PostController extends Controller
 {
     public function create(PostRequest $request)
     {
+        Log::debug($request->title);
         $post = new Post;
         // $post->user_id = Auth::user()->id;
         $post->user_id = 1;
