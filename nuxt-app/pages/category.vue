@@ -11,12 +11,12 @@
             <div class="create-btn">
                 <button type="button" class="btn btn-create" @click="view('create')"><font-awesome-icon :icon="['fas' , 'plus']" class="icon"/>&nbsp;Create</button>
                 <button class="btn btn-import mx-2"><font-awesome-icon :icon="['fas', 'file-import']" class="icon"/>&nbsp;Import</button>
-                <button class="btn btn-export"><font-awesome-icon :icon="['fas' ,'file-export']" class="icon"/>&nbsp;Export</button>
+                <button class="btn btn-export" @click="exportCsv"><font-awesome-icon :icon="['fas' ,'file-export']" class="icon"/>&nbsp;Export</button>
             </div>
             <div class="input-group search-input">
-                <input type="text" class="form-control" value="search">
+                <input type="text" class="form-control" v-model="category">
                 <div class="input-group-append">
-                    <button class="btn btn-primary" type="submit" aria-describedby="basic-addon2">
+                    <button class="btn btn-primary" type="submit" aria-describedby="basic-addon2" @click="filterCategory">
                         <font-awesome-icon :icon="['fas', 'magnifying-glass']" class="icon"/>
                     </button>
                 </div>
@@ -56,11 +56,28 @@
     definePageMeta({
         layout: "after-login",
     });
+    const category = ref()
     const page = ref('create')
     const runtimeConfig = useRuntimeConfig()
     const { data : categories} = await useFetch(runtimeConfig.public.apiBase + '/category/list')
     function view(name) {
         page.value = name
+    }
+    async function filterCategory(){
+        const response = await useFetch(runtimeConfig.public.apiBase + '/category/search' ,{params:{category:category.value}})
+        categories.value = response.data
+        console.log(categories.value)
+    }
+    async function exportCsv(){
+        await useFetch(runtimeConfig.public.apiBase + '/category/export', {responseType:'blob' }).then((response)=>{
+            console.log(response.data)
+            const url = window.URL.createObjectURL(new Blob([response.data.value]))
+            const link = document.createElement('a')
+            link.href = url
+            link.setAttribute('download','category.csv')
+            document.body.appendChild(link)
+            link.click()
+        })
     }
 
 </script>

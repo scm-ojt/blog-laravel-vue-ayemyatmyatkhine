@@ -4,8 +4,10 @@ namespace App\Http\Controllers\ApiController;
 
 use App\Models\Category;
 use Illuminate\Http\Request;
+use App\Exports\ExportCategory;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
+use Maatwebsite\Excel\Facades\Excel;
 use App\Http\Requests\CategoryRequest;
 use Illuminate\Support\Facades\Validator;
 
@@ -13,7 +15,6 @@ class CategoryController extends Controller
 {
     public function create(CategoryRequest $request)
     {
-        Log::debug("yes");
         $data = $request->all();
         $category = new Category;
         $category->name = $request->name;
@@ -30,7 +31,7 @@ class CategoryController extends Controller
 
     public function getCategory()
     {
-        $category = Category::select('id' , 'name')->get();
+        $category = Category::select('id as value' , 'name as label')->get();
         return response()->json($category);
     }
 
@@ -38,5 +39,19 @@ class CategoryController extends Controller
     {
         Category::find($id)->delete();
         return response()->json(['successMessage' => 'Category deleted successfully.']);
+    }
+
+    public function search(Request $request)
+    {
+        $name = $request->category;
+        Log::debug($name);
+        $category = Category::where('name' , 'like' , '%'.$name.'%')->get();
+        return response()->json($category);
+    }
+
+    public function export(Request $request)
+    {
+        $searchData = $request->searchData;
+        return Excel::download(new ExportCategory($searchData), 'categories.csv');
     }
 }

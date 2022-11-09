@@ -20,7 +20,16 @@
                     </div>
                     <div class="input-item mb-3">
                         <label for="category">Select Category</label>
-                        <multiselect v-model="categories" mode="tags" :options="options" label="name" track-by="id"/>
+                        <multiselect
+                            v-model="categories" 
+                            mode="tags" 
+                            :options="categoryList" 
+                            :multiple="true"
+                            label="label"   
+                            track-by="id" 
+                            :close-on-select="true"
+                            @input="updateApprovers"
+                            />
                     </div>
                     <div class="input-item mb-3">
                         <label for="">Title</label>
@@ -42,15 +51,40 @@
 
 <script setup>
     import { $fetch } from "ohmyfetch";
+    import { onMounted } from "vue";
     const runtimeConfig = useRuntimeConfig();
-    const categories = []
+    const categoryList = ref()
+    const categories = ref([])
     const title = ref()
     const description = ref()
     const preview = ref(null)
     const image = ref(null)
-    const imageUrl = ref(null)
     const message = ref()
-    const { data: options } = await useFetch(runtimeConfig.public.apiBase + '/categories')
+    const getCategories  = async () => {
+        await useFetch(runtimeConfig.public.apiBase + '/categories').then((response)=>{
+            categoryList.value = response.data.value
+        })  
+    }
+    onMounted(getCategories)
+
+    // function optionSelected(option, id) {
+    //     categories.value.push(categoryList[option][value])
+    // }
+    
+    // function onSelect(value) {
+    //     categories.value.push(categories)
+    //     console.log(categories)
+    // }
+
+    function updateApprovers(categories) {
+        let approvers = [];
+        categories.forEach((category) => {
+                approvers.push(category);
+        });
+        categories.value = approvers;
+        console.log(categories)
+    }
+
     var reader = new FileReader();
     function previewImage(event) {
         var input = event.target;
@@ -58,20 +92,26 @@
             reader.onload = (e) => {
                 preview.value = e.target.result;
             }
-            //image.value = input.files[0];
+            image.value = input.files[0];
             image.value = reader.readAsDataURL(input.files[0]);
             imageUrl.value = URL.createObjectURL(input.files[0])
         }
     }
+    
     async function save() {
-        let formData = new FormData()
-        formData.append('title' , title.value)
-        formData.append('description' , description.value)
-        formData.append('category' , [1,2])
-        formData.append('image' , image.value)
+        // let formData = new FormData()
+        // formData.append('title' , title.value)
+        // formData.append('description' , description.value)
+        // formData.append('category' , categories)
+        // formData.append('image' , image.value)
         await $fetch(runtimeConfig.public.apiBase + "/post/create", {
             method: 'POST',
-            body: formData
+            body: {
+                title : title.value,
+                description: description.value,
+                category: categories,
+                image: image.value
+            }
         }).then((response) => {
             message.value = response.successMessage
         })
@@ -81,7 +121,7 @@
         image.value = null
         title.value = null
         description.value = null
-        categories.value = []
+        categories = []
     }
 </script>
 

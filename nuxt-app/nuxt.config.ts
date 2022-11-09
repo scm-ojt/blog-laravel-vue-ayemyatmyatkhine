@@ -13,7 +13,7 @@ export default defineNuxtConfig({
 	css: [
 		'bootstrap/dist/css/bootstrap.min.css',
 		'@fortawesome/fontawesome-svg-core/styles.css',
-		'@vueform/multiselect/themes/default.css'
+		'@vueform/multiselect/themes/default.css',
 	],
 	script: [
 		{
@@ -25,5 +25,8 @@ export default defineNuxtConfig({
 			'process.env.DEBUG': false,
 		},
 	},
+	plugins: [
+		"@/plugins/bootstrap.client.ts"
+	]
 
 })
