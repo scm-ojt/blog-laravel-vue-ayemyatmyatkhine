@@ -3,7 +3,7 @@
         <div class="header mb-5">
             <div class="create-btn">
                 <NuxtLink class="btn btn-create" to="post/create"><font-awesome-icon :icon="['fas' , 'plus']" class="icon"/>&nbsp;Create</NuxtLink>
-                <button class="btn btn-import mx-2"><font-awesome-icon :icon="['fas', 'file-import']" class="icon"/>&nbsp;Import</button>
+                <button class="btn btn-import mx-2" @click="toggle()"><font-awesome-icon :icon="['fas', 'file-import']" class="icon"/>&nbsp;Import</button>
                 <button class="btn btn-export" @click="exportCsv"><font-awesome-icon :icon="['fas' ,'file-export']" class="icon"/>&nbsp;Export</button>
             </div>
             <div class="input-group search-input">
@@ -31,7 +31,7 @@
                 <tbody v-if="filterList.value.length > 0">
                     <tr v-for="data in filterList.value" :key="data.id">
                         <td>{{data.id}}</td>
-                        <td>{{data.image}}</td>
+                        <td><img :src="'http://127.0.0.1:8000/storage/app/public/images'+data.image" alt=""></td>
                         <td>{{data.user.name}}</td>
                         <td v-if="data.categories.length > 1">
                             <span v-for="category in data.categories" :key="category.id" class="categories">{{ category.name }}</span>
@@ -41,7 +41,7 @@
                         <td>{{ data.body }}</td>
                         <td>
                             <button class="btn btn-primary btn-edit my-2"><font-awesome-icon :icon="['fas','pen-to-square']" /></button>
-                            <button class="btn btn-danger btn-delete mx-2"><font-awesome-icon :icon="['fas', 'trash-can']" /></button>
+                            <button class="btn btn-danger btn-delete mx-2" @click.prevent="deletePost(data.id)"><font-awesome-icon :icon="['fas', 'trash-can']" /></button>
                             <button class="btn btn-info btn-detail"><font-awesome-icon :icon="['fas', 'circle-info']" class="info-icon" /></button>
                         </td>
                     </tr>
@@ -51,11 +51,14 @@
                 </tbody>
             </table>
         </div>
+        <fileImportModal></fileImportModal>
     </div>
 </template>
 
-<script setup>
-import { $fetch } from "ohmyfetch";
+<script setup lang="ts">
+    import { $fetch } from "ohmyfetch";
+    import type { Modal } from "bootstrap";
+    const { $bootstrap } = useNuxtApp();
     definePageMeta({
         layout: "after-login",
     });
@@ -63,6 +66,8 @@ import { $fetch } from "ohmyfetch";
     const filterList = ref([])
     const searchData = ref()
     const isOpen = ref(false)
+    const messages = ref()
+    const import_file = ref()
     const runtimeConfig = useRuntimeConfig(); 
     const response = await useFetch(runtimeConfig.public.apiBase + '/post/list');
     posts.value = response.data
@@ -76,7 +81,6 @@ import { $fetch } from "ohmyfetch";
     async function exportCsv()
     {
         await useFetch(runtimeConfig.public.apiBase + '/post/export', {responseType:'blob' }).then((response)=>{
-            console.log(response.data)
             const url = window.URL.createObjectURL(new Blob([response.data.value]))
             const link = document.createElement('a')
             link.href = url
@@ -84,7 +88,26 @@ import { $fetch } from "ohmyfetch";
             document.body.appendChild(link)
             link.click()
         })
+        window.location.reload(true)
     }
+
+    async function deletePost(id){
+        if(confirm('Are you sure you want to delete this post?')) {
+            await $fetch(runtimeConfig.public.apiBase + `/post/delete/${id}` , {method:'DELETE'}).then((response)=>{
+                messages.value = response.successMessage
+            })
+        }
+        window.location.reload(true)
+    }
+
+    let modal: Modal;
+    onMounted(() => {
+        modal = new $bootstrap.Modal(document.getElementById("exampleModal"));
+    });
+
+    const toggle = () => {
+        modal.toggle();
+    };
 </script>
 
 <style src="../../assets/css/list.css"></style>

@@ -21,7 +21,11 @@ class PostController extends Controller
         $post = new Post;
         // $post->user_id = Auth::user()->id;
         $post->user_id = 1;
-        $post->image = $request->image;
+        $image = $request->file('image');
+        Log::debug($image);
+        $imageName = uniqid() . '_' . $image->getClientOriginalName();
+        $image->storeAs('public/images', $imageName);
+        $post->image = $imageName;
         $post->title = $request->title;
         $post->body = $request->description;
         $post->created_at = Date('Y-m-d');
@@ -38,9 +42,9 @@ class PostController extends Controller
         return response()->json($posts);   
     }
 
-    public function delete(Id $id)
+    public function delete($id)
     {
-        Post::find($id)->delete();
+        Post::where('id' , $id)->delete();
         return response()->json(['successMessage' => 'Post deleted successfully']);
     }
 

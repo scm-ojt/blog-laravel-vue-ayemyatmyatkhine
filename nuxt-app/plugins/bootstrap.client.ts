@@ -1,9 +1,10 @@
-// import {Modal} from 'bootstrap'
-import * as bootstrap from 'bootstrap'
+import { Modal } from "bootstrap";
 
 export default defineNuxtPlugin(() => ({
   provide: {
-    bootstrap: bootstrap
+    bootstrap: {
+      Modal,
+    },
   },
 }));
 

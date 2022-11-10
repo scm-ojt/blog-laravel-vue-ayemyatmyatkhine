@@ -5,6 +5,7 @@ namespace App\Http\Controllers\ApiController;
 use App\Models\Category;
 use Illuminate\Http\Request;
 use App\Exports\ExportCategory;
+use App\Imports\ImportCategory;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 use Maatwebsite\Excel\Facades\Excel;
@@ -35,9 +36,9 @@ class CategoryController extends Controller
         return response()->json($category);
     }
 
-    public function delete(Id $id)
+    public function delete($id)
     {
-        Category::find($id)->delete();
+        Category::where('id' , $id)->delete();
         return response()->json(['successMessage' => 'Category deleted successfully.']);
     }
 
@@ -53,5 +54,15 @@ class CategoryController extends Controller
     {
         $searchData = $request->searchData;
         return Excel::download(new ExportCategory($searchData), 'categories.csv');
+    }
+
+    public function import(Request $request)
+    {
+        $this->validate($request, [
+            'import_file'  => 'required|max:2000|mimes:csv,xlsx'
+        ]);
+        $path = $request->file('import_file')->getRealPath();
+        Excel::import(new ImportCategory, $path);
+        return response()->json(['message' => "Import Successfully"]);
     }
 }

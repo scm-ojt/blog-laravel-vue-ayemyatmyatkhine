@@ -85,3 +85,8 @@
 .required {
     color: red;
 }
+
+.btn-submit {
+    clear: both;
+    float: right;
+}

@@ -29,12 +29,17 @@ Route::prefix('/post')->group(function() {
     Route::delete('/delete/{id}' , [PostController::class , 'delete']);
     Route::get('/search', [PostController::class , 'search']);
     Route::get('/export' , [PostController::class , 'export']);
+    Route::post('/import' , [PostController::class , 'import']);
 });
 
-Route::post('/category/create' ,[CategoryController::class , 'create']);
-Route::get('/category/list' , [CategoryController::class , 'getCategoryList']);
-Route::delete('/category/delete/{id}' , [CategoryController::class , 'delete']);
 Route::get('/categories' , [CategoryController::class , 'getCategory']);
-Route::get('category/export' , [CategoryController::class , 'export']);
-Route::get('category/search' , [CategoryController::class , 'search']);
+Route::prefix('/category')->group(function(){
+    Route::post('/create' ,[CategoryController::class , 'create']);
+    Route::get('/list' , [CategoryController::class , 'getCategoryList']);
+    Route::delete('/delete/{id}' , [CategoryController::class , 'delete']);
+    Route::get('/export' , [CategoryController::class , 'export']);
+    Route::get('/search' , [CategoryController::class , 'search']);
+    Route::post('/import' , [CategoryController::class , 'import']);
+});
+
 

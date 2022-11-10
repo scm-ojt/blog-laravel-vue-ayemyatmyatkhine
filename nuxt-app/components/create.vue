@@ -29,7 +29,7 @@ async function save() {
   }).then((response) => {
     message.value = response.successMessage;
   });
-  console.log(message);
+  window.location.reload(true)
 }
 </script>
 

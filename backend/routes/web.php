@@ -16,7 +16,7 @@ use App\Http\Controllers\ApiController\CategoryController;
 */
 
 Route::get('/', function () {
-    //return view('welcome');
+    return view('welcome');
 });
 
 //Route::post('/post/create' ,[PostController::class , 'create']);
