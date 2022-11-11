@@ -7,7 +7,8 @@ export default defineNuxtConfig({
 	runtimeConfig: {
 		apiSecret : '',
       public: {
-        apiBase: ''
+        apiBase: '',
+		url : process.env.APP_URL
       }
 	},
 	css: [

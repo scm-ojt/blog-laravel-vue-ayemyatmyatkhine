@@ -31,7 +31,8 @@
                 <tbody v-if="filterList.value.length > 0">
                     <tr v-for="data in filterList.value" :key="data.id">
                         <td>{{data.id}}</td>
-                        <td><img :src="'http://127.0.0.1:8000/storage/app/public/images'+data.image" alt=""></td>
+                        <td v-if="data.image == null"><img src="../../assets/images/image1.webp" alt="" class="post-img"></td>
+                        <td v-else><img :src="imageUrl + `/storage/images/${data.image}`" alt="img" class="post-img"/></td>
                         <td>{{data.user.name}}</td>
                         <td v-if="data.categories.length > 1">
                             <span v-for="category in data.categories" :key="category.id" class="categories">{{ category.name }}</span>
@@ -69,6 +70,7 @@
     const messages = ref()
     const import_file = ref()
     const runtimeConfig = useRuntimeConfig(); 
+    const imageUrl = runtimeConfig.public.url
     const response = await useFetch(runtimeConfig.public.apiBase + '/post/list');
     posts.value = response.data
     filterList.value = posts.value

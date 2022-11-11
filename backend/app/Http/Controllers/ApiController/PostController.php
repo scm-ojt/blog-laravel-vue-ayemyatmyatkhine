@@ -21,11 +21,16 @@ class PostController extends Controller
         $post = new Post;
         // $post->user_id = Auth::user()->id;
         $post->user_id = 1;
-        $image = $request->file('image');
-        Log::debug($image);
-        $imageName = uniqid() . '_' . $image->getClientOriginalName();
-        $image->storeAs('public/images', $imageName);
-        $post->image = $imageName;
+        if($request->hasFile('image')){
+            $image = $request->file('image');
+            Log::debug($image);
+            $imageName = uniqid() . '_' . $image->getClientOriginalName();
+            $image->storeAs('public/images', $imageName);
+            $post->image = $imageName;
+        }
+        else {
+            $post->image = $request->image;
+        }
         $post->title = $request->title;
         $post->body = $request->description;
         $post->created_at = Date('Y-m-d');

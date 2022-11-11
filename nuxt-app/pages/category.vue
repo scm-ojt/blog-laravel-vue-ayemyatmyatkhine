@@ -2,14 +2,13 @@
     <div class="container mt-5 d-flex flex-row">
         <!-- create side -->
         <div class="create-side">
-            <create v-if="page === 'create'" />
-            <edit v-if="page === 'edit'" />
+            <create :is="categoryId ? categoryId : '' " :category-id="categoryId" />
         </div>
         <!-- list side -->
         <div class="list-side ms-5">
             <div class="header mb-4">
             <div class="create-btn">
-                <button type="button" class="btn btn-create" @click="view('create')"><font-awesome-icon :icon="['fas' , 'plus']" class="icon"/>&nbsp;Create</button>
+                <button type="button" class="btn btn-create" @click="view('null')"><font-awesome-icon :icon="['fas' , 'plus']" class="icon"/>&nbsp;Create</button>
                 <button class="btn btn-import mx-2" @click="toggle()"><font-awesome-icon :icon="['fas', 'file-import']" class="icon"/>&nbsp;Import</button>
                 <button class="btn btn-export" @click="exportCsv"><font-awesome-icon :icon="['fas' ,'file-export']" class="icon"/>&nbsp;Export</button>
             </div>
@@ -36,7 +35,7 @@
                         <td>{{ item.id }}</td>
                         <td>{{item.name}}</td>
                         <td class="action-btn">
-                            <button class="btn btn-primary btn-edit me-2" @click="view('edit')"><font-awesome-icon :icon="['fas','pen-to-square']" /></button>
+                            <button class="btn btn-primary btn-edit me-2" @click="view(item.id)"><font-awesome-icon :icon="['fas','pen-to-square']" /></button>
                             <button class="btn btn-danger btn-delete" @click="deleteCategory(item.id)"><font-awesome-icon :icon="['fas', 'trash-can']" /></button>
                         </td>
                     </tr>
@@ -55,14 +54,13 @@
 
 <script setup lang="ts">
     import { $fetch } from "ohmyfetch";
-    import {ref} from 'vue'
+    import { ref } from 'vue'
     import type { Modal } from "bootstrap";
-    const { $bootstrap } = useNuxtApp();
     definePageMeta({
         layout: "after-login",
     });
     const category = ref()
-    const page = ref('create')
+    const categoryId = ref()
     const categories = ref([])
     const filterCategories = ref([])
     const messages = ref()
@@ -71,14 +69,17 @@
     categories.value = response.data    
     filterCategories.value = categories.value
 
-    function view(name) {
-        page.value = name
+    // create and update components
+    function view(params) {
+        categoryId.value = params
     }
+
     //search category
     async function filterCategory(){
         const response = await useFetch(runtimeConfig.public.apiBase + '/category/search' ,{params:{category:category.value}})
         filterCategories.value = response.data
     }
+
     // export csv file
     async function exportCsv(){
         await useFetch(runtimeConfig.public.apiBase + '/category/export', {responseType:'blob' }).then((response)=>{
@@ -100,11 +101,12 @@
         window.location.reload(true)
     }
 
+    // file import modal
+    const { $bootstrap } = useNuxtApp();
     let modal: Modal;
     onMounted(() => {
         modal = new $bootstrap.Modal(document.getElementById("exampleModal"));
     });
-
     const toggle = () => {
         modal.toggle();
     };
