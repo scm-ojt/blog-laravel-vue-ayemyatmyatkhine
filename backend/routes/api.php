@@ -30,6 +30,7 @@ Route::prefix('/post')->group(function() {
     Route::get('/search', [PostController::class , 'search']);
     Route::get('/export' , [PostController::class , 'export']);
     Route::post('/import' , [PostController::class , 'import']);
+    Route::get('/edit/{id}' , [PostController::class , 'edit']);
 });
 
 Route::get('/categories' , [CategoryController::class , 'getCategory']);
@@ -40,6 +41,7 @@ Route::prefix('/category')->group(function(){
     Route::get('/export' , [CategoryController::class , 'export']);
     Route::get('/search' , [CategoryController::class , 'search']);
     Route::post('/import' , [CategoryController::class , 'import']);
+    Route::put('/update/{id}' , [CategoryController::class , 'edit']);
 });
 
 

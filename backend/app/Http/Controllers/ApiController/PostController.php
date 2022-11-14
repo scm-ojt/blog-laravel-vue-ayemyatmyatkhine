@@ -81,4 +81,10 @@ class PostController extends Controller
         $searchData = $request->searchData;
         return Excel::download(new ExportPost($searchData), 'posts.csv');
     }
+
+    public function edit($id)
+    {
+        $post = Post::with('user')->with('categories')->where('id' , $id)->get();
+        return response()->json($post);
+    }
 }

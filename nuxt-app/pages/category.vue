@@ -2,13 +2,13 @@
     <div class="container mt-5 d-flex flex-row">
         <!-- create side -->
         <div class="create-side">
-            <create :is="categoryId ? categoryId : '' " :category-id="categoryId" />
+            <create :category-id="categoryId" :category-name="categoryName" />
         </div>
         <!-- list side -->
         <div class="list-side ms-5">
             <div class="header mb-4">
             <div class="create-btn">
-                <button type="button" class="btn btn-create" @click="view('null')"><font-awesome-icon :icon="['fas' , 'plus']" class="icon"/>&nbsp;Create</button>
+                <button type="button" class="btn btn-create" @click="view('null' , 'null')"><font-awesome-icon :icon="['fas' , 'plus']" class="icon"/>&nbsp;Create</button>
                 <button class="btn btn-import mx-2" @click="toggle()"><font-awesome-icon :icon="['fas', 'file-import']" class="icon"/>&nbsp;Import</button>
                 <button class="btn btn-export" @click="exportCsv"><font-awesome-icon :icon="['fas' ,'file-export']" class="icon"/>&nbsp;Export</button>
             </div>
@@ -35,7 +35,7 @@
                         <td>{{ item.id }}</td>
                         <td>{{item.name}}</td>
                         <td class="action-btn">
-                            <button class="btn btn-primary btn-edit me-2" @click="view(item.id)"><font-awesome-icon :icon="['fas','pen-to-square']" /></button>
+                            <button class="btn btn-primary btn-edit me-2" @click="view(item.id , item.name)"><font-awesome-icon :icon="['fas','pen-to-square']" /></button>
                             <button class="btn btn-danger btn-delete" @click="deleteCategory(item.id)"><font-awesome-icon :icon="['fas', 'trash-can']" /></button>
                         </td>
                     </tr>
@@ -60,7 +60,8 @@
         layout: "after-login",
     });
     const category = ref()
-    const categoryId = ref()
+    const categoryId = ref(null)
+    const categoryName = ref()
     const categories = ref([])
     const filterCategories = ref([])
     const messages = ref()
@@ -70,10 +71,11 @@
     filterCategories.value = categories.value
 
     // create and update components
-    function view(params) {
-        categoryId.value = params
+    async function view(params1 , params2) {
+        categoryId.value = params1,
+        categoryName.value = params2
     }
-
+    
     //search category
     async function filterCategory(){
         const response = await useFetch(runtimeConfig.public.apiBase + '/category/search' ,{params:{category:category.value}})

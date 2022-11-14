@@ -65,4 +65,14 @@ class CategoryController extends Controller
         Excel::import(new ImportCategory, $path);
         return response()->json(['message' => "Import Successfully"]);
     }
+
+    public function edit(Request $request , $id)
+    {
+        Log::debug($id);
+        $category = Category::find($id);
+        $category->name = $request->category;
+        $category->updated_at = Date('Y-m-d');
+        $category->update();
+        return response()->json(['successMessage' => 'Update Successfully']);
+    }
 }
