@@ -28,6 +28,12 @@ export default defineNuxtConfig({
 	},
 	plugins: [
 		"@/plugins/bootstrap.client.ts"
-	]
+	],
+	buildModules: [
+		'@nuxtjs/moment'
+	],
+	moment: {
+		timezone: true
+	}
 
 })

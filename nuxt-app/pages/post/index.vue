@@ -43,7 +43,7 @@
                         <td>
                             <NuxtLink class="btn btn-primary btn-edit my-2" :to="`post/edit/${data.id}`"><font-awesome-icon :icon="['fas','pen-to-square']" /></NuxtLink>
                             <button class="btn btn-danger btn-delete mx-2" @click.prevent="deletePost(data.id)"><font-awesome-icon :icon="['fas', 'trash-can']" /></button>
-                            <button class="btn btn-info btn-detail"><font-awesome-icon :icon="['fas', 'circle-info']" class="info-icon" /></button>
+                            <NuxtLink class="btn btn-info btn-detail" :to="`post/${data.id}`"><font-awesome-icon :icon="['fas', 'circle-info']" class="info-icon" /></NuxtLink>
                         </td>
                     </tr>
                 </tbody>

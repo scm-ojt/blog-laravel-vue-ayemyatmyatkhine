@@ -55,7 +55,7 @@
     const runtimeConfig = useRuntimeConfig();
     const route = useRoute()
     const categoryList = ref()
-    const categories = ref([])
+    const categories = ref()
     const title = ref()
     const description = ref()
     const preview = ref(null)
@@ -69,14 +69,6 @@
     }
     onMounted(getCategories)
 
-    function updateApprovers(categories) {
-        let approvers = [];
-        categories.forEach((category) => {
-                approvers.push(category);
-        });
-        categories.value = approvers;
-    }
-
     function previewImage(event) {
         var reader = new FileReader();
         var input = event.target;
@@ -88,13 +80,24 @@
         }
         imageName.value = event.target.files[0]
     }
+
+    const selectedcategories = []
+    function updateApprovers(categories) {
+        let approvers = [];
+        categories.forEach((category) => {
+                approvers.push(category)
+        })
+        selectedcategories.value = approvers
+    }  
     
-    async function save() {
+    async function save() { 
         let formData = new FormData();
-        formData.append('title' , title.value)
-        formData.append('description' , description.value)
-        formData.append('category' , categories.value)
-        formData.append('image', imageName.value);
+        for(var i =0 ; i< selectedcategories.value.length ; i++){
+            formData.append('title' , title.value)
+            formData.append('description' , description.value)
+            formData.append('category[]' , selectedcategories.value[i])
+            formData.append('image', imageName.value)
+        }
         await $fetch(runtimeConfig.public.apiBase + "/post/create", {
             method: 'POST',
             body : formData
@@ -108,7 +111,7 @@
         imageName.value = null
         title.value = null
         description.value = null
-        categories = []
+        selectedcategories.value = []
     }
 </script>
 

@@ -10,7 +10,11 @@ class Comment extends Model
 {
     use HasFactory,softDeletes;
 
+    protected $table = 'comments';
+
     protected $fillable = [
-        'post_id','user_id','body'
+        'post_id',
+        'user_id',
+        'body'
     ];
 }

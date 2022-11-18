@@ -16,6 +16,7 @@
     "@fortawesome/vue-fontawesome": "^3.0.1",
     "@inertiajs/inertia-vue3": "^0.6.0",
     "@nuxtjs/fontawesome": "^1.1.2",
+    "@nuxtjs/moment": "^1.6.1",
     "@popperjs/core": "^2.11.6",
     "@vee-validate/rules": "^4.7.2",
     "@vueform/multiselect": "^2.5.6",

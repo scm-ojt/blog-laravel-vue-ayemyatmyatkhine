@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ApiController\AuthController;
 use App\Http\Controllers\ApiController\PostController;
+use App\Http\Controllers\ApiController\CommentController;
 use App\Http\Controllers\ApiController\CategoryController;
 
 /*
@@ -31,6 +32,8 @@ Route::prefix('/post')->group(function() {
     Route::get('/export' , [PostController::class , 'export']);
     Route::post('/import' , [PostController::class , 'import']);
     Route::get('/edit/{id}' , [PostController::class , 'edit']);
+    Route::put('/update/{id}' , [PostController::class , 'update']);
+    Route::get('/detail/{id}' , [PostController::class , 'getPostDetail']);
 });
 
 Route::get('/categories' , [CategoryController::class , 'getCategory']);
@@ -43,5 +46,7 @@ Route::prefix('/category')->group(function(){
     Route::post('/import' , [CategoryController::class , 'import']);
     Route::put('/update/{id}' , [CategoryController::class , 'edit']);
 });
+
+Route::post('comment/create' , [CommentController::class , 'create']);
 
 

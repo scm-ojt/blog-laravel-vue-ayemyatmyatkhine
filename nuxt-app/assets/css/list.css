@@ -90,3 +90,38 @@
     clear: both;
     float: right;
 }
+
+.detail-card {
+    width: 750px;
+    margin: 0 auto;
+}
+
+.detail-card .post-img {
+    width: 280px;
+    height: 280px;
+}
+
+.detail-card .image {
+    border: 0;
+}
+
+.post-detail .date {
+    width: 250px;
+}
+
+.post-detail .category,
+.comment .comment-user {
+    background-color: rgb(11, 85, 85);
+    color: aliceblue;
+    border: 1px rgb(11, 85, 85) solid;
+    border-radius: 5px;
+    padding: 0 5px;
+}
+
+.comment .comment-body {
+    background-color: aliceblue;
+    border: 1px aliceblue solid;
+    border-radius: 5px;
+    padding: 5px 8px;
+}
+

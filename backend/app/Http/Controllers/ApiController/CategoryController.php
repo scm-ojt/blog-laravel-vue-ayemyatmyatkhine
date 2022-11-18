@@ -16,6 +16,7 @@ class CategoryController extends Controller
 {
     public function create(CategoryRequest $request)
     {
+       
         $data = $request->all();
         $category = new Category;
         $category->name = $request->name;
@@ -68,7 +69,6 @@ class CategoryController extends Controller
 
     public function edit(Request $request , $id)
     {
-        Log::debug($id);
         $category = Category::find($id);
         $category->name = $request->category;
         $category->updated_at = Date('Y-m-d');
