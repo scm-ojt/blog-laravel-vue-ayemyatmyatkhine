@@ -14,11 +14,11 @@
                                 <label for="">Date</label><span class="mx-1">:</span><span>{{ moment(post.created_at).format("dddd, MMMM Do YYYY") }}</span>
                             </div>
                             <div class="user">
-                                <label for="">By</label><span class="mx-1">:</span><span>{{ post.user.name}}</span>
+                                <label for="">By</label><span class="mx-1">:</span><span>{{ post.user?.name }}</span>
                             </div>
                         </div>
                         <div class="mt-3 d-flex flex-row" v-for="category in post.categories" :key="category.id">
-                            <div class="category">{{category.name}}</div>
+                            <div class="category">{{category['name']}}</div>
                         </div>
                         <div class="paragraph mt-3">{{post.body}}</div>
                     </div>
@@ -26,13 +26,13 @@
                 <div class="comment">
                     <div class="input-group my-4">
                         <input type="text" class="form-control" placeholder="Write comment here!" v-model="comment" aria-describedby="basic-addon2">
-                        <button class="input-group-text" id="basic-addon2" @click.prevent="createComment">Comment</button>
+                        <button class="input-group-text" id="basic-addon2" type="submit" @click.prevent="createComment">Comment</button>
                     </div>
                     <div class="all-comment">
                         <label for="">All comments</label><span class="mx-2">:</span>
-                        <div class="my-3">
-                            <span class="comment-user me-2">hello</span>
-                            <span class="comment-body">jsdfihweirjweir erjiweuriwerewj</span>
+                        <div class="my-3" v-for="comment in post.comments" :key="comment.id">
+                            <span class="comment-user me-2">{{ comment.user.name }}</span>
+                            <span class="comment-body">{{comment['body']}}</span>
                         </div>
                     </div>
                 </div>
@@ -43,22 +43,33 @@
 
 <script setup>
     import { $fetch } from "ohmyfetch";
+    import { onMounted , reactive } from "vue";
     import moment from 'moment'
     const runtimeConfig = useRuntimeConfig()
     const route = useRoute()
     const imageUrl = runtimeConfig.public.url
-    const comment = ref()
-    const { data: post } = await useFetch(runtimeConfig.public.apiBase + `/post/detail/${route.params.id}`)
     const postId = route.params.id
+    const comment = ref()
+    const post = ref({})
+    
+    const getPost = async () => {
+        await useFetch(runtimeConfig.public.apiBase + `/post/detail/${postId}`).then((response)=>{
+            post.value = response.data.value
+        })  
+    }
+    onMounted(getPost)
+    
+    // create comment
     async function createComment()
     {
         await $fetch(runtimeConfig.public.apiBase + '/comment/create' , {
             method : 'POST',
             body : {
-                postId : postId,
+                postId : route.params.id,
                 comment : comment.value
             }
         })
+        getPost
     }
 </script>
 

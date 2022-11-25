@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Maatwebsite\Excel\Facades\Excel;
+use App\Http\Requests\PostUpdateRequest;
 use Illuminate\Support\Facades\Validator;
 
 class PostController extends Controller
@@ -23,7 +24,6 @@ class PostController extends Controller
     public function create(PostRequest $request)
     {
         $post = new Post;
-        // $post->user_id = Auth::user()->id;
         $post->user_id = 1;
         if($request->hasFile('image')){
             $image = $request->file('image');
@@ -38,7 +38,7 @@ class PostController extends Controller
         $post->body = $request->description;
         $post->created_at = Date('Y-m-d');
         $post->save();
-        $categories = $request->category;
+        $categories[] = $request->category;
         foreach($categories as $category){
             $post->categories()->attach($category);
         }
@@ -70,7 +70,6 @@ class PostController extends Controller
     public function search(Request $request)
     {
         $searchData = $request->searchData;
-        Log::debug($searchData);
         $posts = Post::with('user')
         ->with('categories')->where('title' , 'like' , '%'.$searchData.'%')
                 ->orWhere('body', 'like', "%" . $searchData . "%")
@@ -113,18 +112,17 @@ class PostController extends Controller
         return response()->json($post);
     }
 
-    public function update(Request $request , $id)
+    public function update(PostRequest $request , $id)
     {
+        log::debug($request->all());
         $post = Post::with('user')->with('categories')->where('id' , $id)->first();
         if($request->hasFile('image')){
-            Log::debug($request->file('image'));
             $image = $request->file('image');
             $imageName = uniqid() . '_' . $image->getClientOriginalName();
             $image->storeAs('public/images', $imageName);
             $post->image = $imageName;
         }
         else {
-            Log::debug($request->image);
             $post->image = $request->image;
         }
         $post->title = $request->title;
@@ -156,7 +154,8 @@ class PostController extends Controller
 
     public function getPostDetail($id)
     {
-        $post = Post::with('user')->with('categories')->where('id' , $id)->first();
+        //$post = Post::where('id' , $id)->with('user')->with('categories')->with('comments.user')->first()->toArray();
+        $post = Post::where('id' , $id)->with(['user' , 'categories' , 'comments.user' ])->first()->toArray();
         return response()->json($post);
     }
 }

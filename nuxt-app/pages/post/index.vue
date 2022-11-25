@@ -3,7 +3,7 @@
         <div class="header mb-5">
             <div class="create-btn">
                 <NuxtLink class="btn btn-create" to="post/create"><font-awesome-icon :icon="['fas' , 'plus']" class="icon"/>&nbsp;Create</NuxtLink>
-                <button class="btn btn-import mx-2" @click="toggle()"><font-awesome-icon :icon="['fas', 'file-import']" class="icon"/>&nbsp;Import</button>
+                <button class="btn btn-import mx-2" @click="toggleModal()"><font-awesome-icon :icon="['fas', 'file-import']" class="icon"/>&nbsp;Import</button>
                 <button class="btn btn-export" @click="exportCsv"><font-awesome-icon :icon="['fas' ,'file-export']" class="icon"/>&nbsp;Export</button>
             </div>
             <div class="input-group search-input">
@@ -28,10 +28,10 @@
                         <th>Actions</th>
                     </tr>
                 </thead>
-                <tbody v-if="filterList.value.length > 0">
-                    <tr v-for="data in filterList.value" :key="data.id">
+                <tbody v-if="filterList.length > 0">
+                    <tr v-for="data in filterList" :key="data.id">
                         <td>{{data.id}}</td>
-                        <td v-if="data.image == null"><img src="../../assets/images/image1.webp" alt="" class="post-img"></td>
+                        <td v-if="data.image == null || data.image == 'null'"><img src="../../assets/images/image1.webp" alt="" class="post-img"></td>
                         <td v-else><img :src="imageUrl + `/storage/images/${data.image}`" alt="img" class="post-img"/></td>
                         <td>{{data.user.name}}</td>
                         <td v-if="data.categories.length > 1">
@@ -57,9 +57,9 @@
 </template>
 
 <script setup lang="ts">
-    import { $fetch } from "ohmyfetch";
-    import type { Modal } from "bootstrap";
-    const { $bootstrap } = useNuxtApp();
+    import axios from 'axios'
+    import { onMounted } from "vue"
+    const { $bootstrap } = useNuxtApp()
     definePageMeta({
         layout: "after-login",
     });
@@ -71,45 +71,48 @@
     const import_file = ref()
     const runtimeConfig = useRuntimeConfig(); 
     const imageUrl = runtimeConfig.public.url
-    const response = await useFetch(runtimeConfig.public.apiBase + '/post/list');
-    posts.value = response.data
-    filterList.value = posts.value
+    // const response = await useFetch(runtimeConfig.public.apiBase + '/post/list');
+    await axios.get('http://127.0.0.1:8000/api/post/list').then((response)=>{
+        posts.value = response.data
+        filterList.value = posts.value
+    })
 
     async function filter() {
-        const response = await useFetch(runtimeConfig.public.apiBase + '/post/search' ,{params:{searchData:searchData.value}});
+        const response = await axios.get('http://127.0.0.1:8000/api/post/search' ,{params:{searchData:searchData.value}});
         filterList.value = response.data
     }
 
     async function exportCsv()
     {
-        await useFetch(runtimeConfig.public.apiBase + '/post/export', {responseType:'blob' }).then((response)=>{
-            const url = window.URL.createObjectURL(new Blob([response.data.value]))
+        await axios.get('http://127.0.0.1:8000/api/post/export', {responseType:'blob' }).then((response)=>{
+            const url = window.URL.createObjectURL(new Blob([response.data]))
             const link = document.createElement('a')
             link.href = url
             link.setAttribute('download','posts.csv')
             document.body.appendChild(link)
             link.click()
         })
-        window.location.reload(true)
     }
 
     async function deletePost(id){
         if(confirm('Are you sure you want to delete this post?')) {
-            await $fetch(runtimeConfig.public.apiBase + `/post/delete/${id}` , {method:'DELETE'}).then((response)=>{
-                messages.value = response.successMessage
+            await axios.delete(`http://127.0.0.1:8000/api/post/delete/${id}` , {method:'DELETE'}).then((response)=>{
+                messages.value = response.data.successMessage
             })
         }
-        window.location.reload(true)
     }
 
-    let modal: Modal;
-    onMounted(() => {
-        modal = new $bootstrap.Modal(document.getElementById("exampleModal"));
-    });
+    let modal = null
+    function getModal() {
+        if (!modal) {
+            modal = new $bootstrap.Modal(document.getElementById("exampleModal"));   
+        }
+        return modal
+    }
 
-    const toggle = () => {
-        modal.toggle();
-    };
+    function toggleModal() {
+        getModal().show()
+    }
 </script>
 
 <style src="../../assets/css/list.css"></style>

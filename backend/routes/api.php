@@ -44,7 +44,7 @@ Route::prefix('/category')->group(function(){
     Route::get('/export' , [CategoryController::class , 'export']);
     Route::get('/search' , [CategoryController::class , 'search']);
     Route::post('/import' , [CategoryController::class , 'import']);
-    Route::put('/update/{id}' , [CategoryController::class , 'edit']);
+    Route::put('/update/{id}' , [CategoryController::class , 'update']);
 });
 
 Route::post('comment/create' , [CommentController::class , 'create']);

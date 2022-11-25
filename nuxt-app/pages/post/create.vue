@@ -16,12 +16,12 @@
                 <form class="form" @submit.prevent="save" enctype="multipart/form-data">
                     <div class="input-item mb-3">
                         <label for="image">Choose Image</label>
-                        <input type="file" accept="image/*" @change="previewImage" class="form-control" id="my-file" ref="inputFile">
+                        <input type="file" name="image" accept="image/*" @change="previewImage" class="form-control" id="my-file" ref="imageInput">
                     </div>
                     <div class="input-item mb-3">
                         <label for="category">Select Category</label>
                         <multiselect
-                            v-model="categories" 
+                            v-model="category" 
                             mode="tags" 
                             :options="categoryList" 
                             :multiple="true"
@@ -29,15 +29,19 @@
                             track-by="id" 
                             :close-on-select="true"
                             @input="updateApprovers"
+                            name="category"
                             />
+                            <span v-if="errorMessage" class="required">{{ errorMessage.category[0] }}</span>
                     </div>
                     <div class="input-item mb-3">
                         <label for="">Title</label>
-                        <input type="text" class="form-control" v-model="title">
+                        <input type="text" class="form-control" v-model="title" name="title">
+                        <span v-if="errorMessage" class="required">{{ errorMessage.title[0] }}</span>
                     </div>
                     <div class="input-item mb-3">
                         <label for="">Description</label>
-                        <textarea name="" id="" class="form-control" rows="4" v-model="description"></textarea>
+                        <textarea id="" class="form-control" rows="4" name="description" v-model="description"></textarea>
+                        <span v-if="errorMessage" class="required">{{ errorMessage.description[0] }}</span>
                     </div>
                     <div class="input-item">
                         <button class="btn btn-secondary me-3" @click="reset"><font-awesome-icon :icon="['fas' , 'trash-arrow-up']" />&nbsp;Clear</button>
@@ -50,21 +54,23 @@
 </template>
 
 <script setup>
-    import { $fetch } from "ohmyfetch";
-    import { onMounted } from "vue";
+    import { $fetch } from "ohmyfetch"
+    import { onMounted } from "vue"
+    import axios from 'axios'
     const runtimeConfig = useRuntimeConfig();
     const route = useRoute()
     const categoryList = ref()
-    const categories = ref()
-    const title = ref()
-    const description = ref()
+    const category = ref()
+    const title = ref(null)
+    const description = ref(null)
     const preview = ref(null)
     const image = ref(null)
-    const imageName = ref('')
-    const message = ref()
+    const imageName = ref(null)
+    const successMessage = ref()
+    const errorMessage = ref()
     const getCategories  = async () => {
-        await useFetch(runtimeConfig.public.apiBase + '/categories').then((response)=>{
-            categoryList.value = response.data.value
+        await axios.get('http://127.0.0.1:8000/api/categories').then((response)=>{
+            categoryList.value = response.data
         })  
     }
     onMounted(getCategories)
@@ -82,27 +88,33 @@
     }
 
     const selectedcategories = []
-    function updateApprovers(categories) {
+    function updateApprovers(category) {
         let approvers = [];
-        categories.forEach((category) => {
-                approvers.push(category)
+        category.forEach((categoryId) => {
+                approvers.push(categoryId)
         })
         selectedcategories.value = approvers
     }  
     
     async function save() { 
-        let formData = new FormData();
-        for(var i =0 ; i< selectedcategories.value.length ; i++){
-            formData.append('title' , title.value)
-            formData.append('description' , description.value)
-            formData.append('category[]' , selectedcategories.value[i])
-            formData.append('image', imageName.value)
+        let formData = new FormData()
+        if ((selectedcategories != [] && title.value != null && description.value != null) && (imageName.value == null || imageName.value != null)) {
+            for(var i =0 ; i< selectedcategories.value.length ; i++){
+                formData.append('title' , title.value)
+                formData.append('description' , description.value)
+                formData.append('category[]' , selectedcategories.value[i])
+                formData.append('image' , imageName.value)
+            }
         }
-        await $fetch(runtimeConfig.public.apiBase + "/post/create", {
-            method: 'POST',
-            body : formData
+        await axios.post("http://127.0.0.1:8000/api/post/create", formData , {
+            headers : {
+                'Accept' : 'application/json',
+                'Content-Type': 'application/json',
+            },
         }).then((response) => {
-            message.value = response.successMessage
+            successMessage.value = response.data.successMessage
+        }).catch((error) => {
+            errorMessage.value = error.response.data.errors 
         })
     }
 

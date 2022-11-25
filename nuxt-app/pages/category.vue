@@ -9,7 +9,7 @@
             <div class="header mb-4">
             <div class="create-btn">
                 <button type="button" class="btn btn-create" @click="view('null' , 'null')"><font-awesome-icon :icon="['fas' , 'plus']" class="icon"/>&nbsp;Create</button>
-                <button class="btn btn-import mx-2" @click="toggle()"><font-awesome-icon :icon="['fas', 'file-import']" class="icon"/>&nbsp;Import</button>
+                <button class="btn btn-import mx-2" @click="toggleModal()"><font-awesome-icon :icon="['fas', 'file-import']" class="icon"/>&nbsp;Import</button>
                 <button class="btn btn-export" @click="exportCsv"><font-awesome-icon :icon="['fas' ,'file-export']" class="icon"/>&nbsp;Export</button>
             </div>
             <div class="input-group search-input">
@@ -30,8 +30,8 @@
                         <th>Actions</th>
                     </tr>
                 </thead>
-                <tbody v-if="filterCategories.value.length > 0">
-                    <tr v-for="item in filterCategories.value" :key="item.id">
+                <tbody v-if="filterCategories.length > 0">
+                    <tr v-for="item in filterCategories" :key="item.id">
                         <td>{{ item.id }}</td>
                         <td>{{item.name}}</td>
                         <td class="action-btn">
@@ -53,9 +53,9 @@
 </template>
 
 <script setup lang="ts">
-    import { $fetch } from "ohmyfetch";
+    import { $fetch } from "ohmyfetch"
     import { ref } from 'vue'
-    import type { Modal } from "bootstrap";
+    import axios  from 'axios'
     definePageMeta({
         layout: "after-login",
     });
@@ -65,10 +65,15 @@
     const categories = ref([])
     const filterCategories = ref([])
     const messages = ref()
-    const runtimeConfig = useRuntimeConfig()
-    const response  = await useFetch(runtimeConfig.public.apiBase + '/category/list')
-    categories.value = response.data    
-    filterCategories.value = categories.value
+    // const runtimeConfig = useRuntimeConfig()
+    // const response  = await useFetch(runtimeConfig.public.apiBase + '/category/list')
+    await axios.get(`http://127.0.0.1:8000/api/category/list`).then((response)=> {
+        categories.value = response.data
+        filterCategories.value = categories.value 
+        console.log(filterCategories.value)
+    })
+       
+    
 
     // create and update components
     async function view(params1 , params2) {
@@ -78,7 +83,7 @@
     
     //search category
     async function filterCategory(){
-        const response = await useFetch(runtimeConfig.public.apiBase + '/category/search' ,{params:{category:category.value}})
+        const response = await axios.get('http://127.0.0.1:8000/api/category/search' ,{params:{category:category.value}})
         filterCategories.value = response.data
     }
 
@@ -105,13 +110,17 @@
 
     // file import modal
     const { $bootstrap } = useNuxtApp();
-    let modal: Modal;
-    onMounted(() => {
-        modal = new $bootstrap.Modal(document.getElementById("exampleModal"));
-    });
-    const toggle = () => {
-        modal.toggle();
-    };
+    let modal = null
+    function getModal() {
+        if (!modal) {
+            modal = new $bootstrap.Modal(document.getElementById("exampleModal"));   
+        }
+        return modal
+    }
+
+    function toggleModal() {
+        getModal().show()
+    }
 </script>
 
 

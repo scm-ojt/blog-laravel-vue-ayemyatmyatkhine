@@ -27,13 +27,28 @@ export default defineNuxtConfig({
 		},
 	},
 	plugins: [
-		"@/plugins/bootstrap.client.ts"
+		"@/plugins/bootstrap.client.ts",
+		{ src: '~/plugins/vee-validate.js', ssr: true },
 	],
 	buildModules: [
 		'@nuxtjs/moment'
 	],
-	moment: {
-		timezone: true
-	}
+	axios: {
+		baseURL: 'http://127.0.0.1:8000/api',
+	},
+	modules: [["@nuxtjs/axios", { proxyHeaders: false }], "@nuxtjs/proxy"],
+	// modules: [
+	// 	['@nuxtjs/axios', { proxyHeaders: false }]
+	// ],
+	// axios: {
+	// 	// See https://github.com/nuxt-community/axios-module#options
+	// 	baseURL: process.env.NUXT_PUBLIC_API_BASE,
+	// },
+	// publicRuntimeConfig: {
+	// 	axios: {
+	// 	  baseURL: process.env.NUXT_PUBLIC_API_BASE,
+	// 	},
+	// },
+	
 
 })

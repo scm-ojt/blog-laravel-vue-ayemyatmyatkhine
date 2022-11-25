@@ -14,17 +14,23 @@ class AuthController extends Controller
 {
     public function register(UserRequest $request)
     {
-        $user = new User;
-        $user->name = $request->name;
-        $user->email = $request->email;
-        $user->password = Hash::make($request->password);
-        $user->created_at = Date('Y-m-d');
-        $user->save();
-        
-        $success['token'] = $user->createToken('MyApp')->plainTextToken;
-        $success['name'] = $user->name;
+        $validation = $request->validated();
+        if($validation) {
+            $user = new User;
+            $user->name = $request->name;
+            $user->email = $request->email;
+            $user->password = Hash::make($request->password);
+            $user->created_at = Date('Y-m-d');
+            $user->save();
+            
+            $success['token'] = $user->createToken('MyApp')->plainTextToken;
+            $success['name'] = $user->name;
 
-        return response()->json($success);
+            return response()->json($success);
+        }
+        else {
+            return response()->json(['error'=> 'Unauthorized user.']);
+        }
     }
 
     public function login(LoginRequest $request)

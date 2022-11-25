@@ -11,13 +11,12 @@ use App\Http\Controllers\Controller;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Http\Requests\CategoryRequest;
 use Illuminate\Support\Facades\Validator;
+use App\Http\Requests\CategoryUpdateRequest;
 
 class CategoryController extends Controller
 {
     public function create(CategoryRequest $request)
     {
-       
-        $data = $request->all();
         $category = new Category;
         $category->name = $request->name;
         $category->created_at = Date('Y-m-d');
@@ -67,10 +66,10 @@ class CategoryController extends Controller
         return response()->json(['message' => "Import Successfully"]);
     }
 
-    public function edit(Request $request , $id)
+    public function update(CategoryUpdateRequest $request , $id)
     {
         $category = Category::find($id);
-        $category->name = $request->category;
+        $category->name = $request->categoryName;
         $category->updated_at = Date('Y-m-d');
         $category->update();
         return response()->json(['successMessage' => 'Update Successfully']);

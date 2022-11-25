@@ -11,11 +11,12 @@ class CommentController extends Controller
 {
     public function create(Request $request)
     {
+        info($request->postId);
         $comment = new Comment;
+        $comment->user_id = 1;
         $comment->post_id = $request->postId;
         $comment->body = $request->comment;
-        $comment->user_id = 1;
         $comment->created_at = Date('Y-m-d');
-        $comment->create();
+        $comment->save();
     }
 }
