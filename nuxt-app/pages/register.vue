@@ -2,56 +2,69 @@
     <div class="mx-auto my-auto flex-column">
         <img src="../assets/images/nuxt-logo.png" alt="" class="logo mx-auto d-block">
         <h4 class="title text-center mt-2 mb-4">Please Sign Up</h4>
-        <form action="" class="register-form">
+        <div v-if="successMessage" class="alert alert-success" role="alert">{{successMessage}}</div>
+        <form action="" class="register-form" @submit.prevent="register">
             <div class="mb-3">
-                <input type="text" class="form-control" placeholder="User Name">
+                <input type="text" class="form-control" placeholder="User Name" v-model="name" name="name">
+                <span v-if="errorMessage.name" class="required">{{ errorMessage.name[0] }}</span>
             </div>
             <div class="mb-4">
-                <input type="text" class="form-control" placeholder="Email Address">
+                <input type="text" class="form-control" placeholder="Email Address" v-model="email" name="email">
+                <span v-if="errorMessage.email" class="required">{{ errorMessage.email[0] }}</span>
             </div>
             <div class="mb-4">
-                <input type="text" class="form-control" placeholder="Password">
+                <input type="password" class="form-control" placeholder="Password" v-model="password" name="password">
+                <span v-if="errorMessage.password" class="required">{{ errorMessage.password[0] }}</span>
             </div>
             <div class="mb-4">
-                <input type="text" class="form-control" placeholder="Password Confirmation">
+                <input type="password" name="confirm_password" class="form-control" placeholder="Password Confirmation" v-model="confirm_password">
+                <span v-if="errorMessage.confirm_password" class="required">{{ errorMessage.confirm_password[0] }}</span>
             </div>
             <div class="mb-5">
-                <button class="btn btn-custom form-control">Sing Up</button>
+                <button class="btn btn-custom form-control" type="submit">Sing Up</button>
             </div>
         </form>
     </div>
 </template>
 
-<script>
+<script setup>
+    import axios from 'axios'
     definePageMeta({
         layout: "default",
     });
+    const runtimeConfig = useRuntimeConfig()
+    const router = useRouter()
+    const name = ref()
+    const email = ref()
+    const password = ref()
+    const confirm_password = ref()
+    const successMessage = ref()
+    const errorMessage = ref({})
+    const success = ref(true)
+    async function register() {
+        const formData = new FormData()
+        if (name.value != null && email.value != null && password.value != null && confirm_password.value != null || (name.value != null || email.value != null || password.value != null || confirm_password.value != null)) {
+            formData.append('name' , name.value),
+            formData.append('email' , email.value),
+            formData.append('password' , password.value),
+            formData.append('confirm_password' , confirm_password.value)
+        }
+        await axios.post(runtimeConfig.public.apiBase + "/register", formData , {
+            headers : {
+                'Accept' : 'application/json',
+                'Content-Type' : 'application/json',
+            },
+        }).then((response)=>{
+            successMessage.value = response.data.successMessage
+            success.value = true
+        }).catch((error)=>{
+            errorMessage.value = error.response.data.errors
+            success.value = false
+        })
+        if(success.value){
+            router.push('/login')
+        }
+    }
 </script>
 
-<style>
-.navbar-custom {
-    background-color: goldenrod;
-}
-.navbar-brand {
-    display: contents;
-}
-.nav-logo {
-    width: 70px;
-    height: 60px;
-}
-.header {
-    margin: 0;
-}
-.footer {
-    background-color: black;
-    color: goldenrod;
-    clear:both;
-    padding: 8px 0;
-    text-align: center;
-    margin: 0 auto;
-}
-.navbar-nav {
-    margin: 0 0 0 auto;
-   font-weight: bold;
-}
-</style>
+<style src="../assets/css/layout.css"></style>

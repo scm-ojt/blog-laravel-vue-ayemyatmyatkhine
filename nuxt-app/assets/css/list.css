@@ -63,7 +63,8 @@
     margin-top: 65px;
 }
 
-.create-card {
+.create-card,
+.success-alert {
     width: 800px;
     margin: 0 auto;
 }
@@ -125,4 +126,34 @@
     border-radius: 5px;
     padding: 5px 8px;
 }
+
+/* login form */
+.logo {
+    width: 165px;
+    height: 110px;
+    margin: 0 auto;
+}
+.login-form, 
+.register-form {
+    width: 400px;
+    min-width: 300px;
+}
+.btn-custom {
+    background-color: goldenrod;
+}
+.btn-custom:hover {
+    background-color: rgb(65, 224, 184);
+}
+
+/* .alert {
+    animation: autoHide 1s ease-in 3s forwards;
+}
+
+@keyframes autoHide {
+    to {
+        width:0;
+        height:0;
+        overflow:hidden;
+    }
+} */
 

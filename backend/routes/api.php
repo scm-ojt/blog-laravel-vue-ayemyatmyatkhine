@@ -19,11 +19,13 @@ use App\Http\Controllers\ApiController\CategoryController;
 */
 Route::post('/register' , [AuthController::class , 'register']);
 Route::post('/login' , [AuthController::class , 'login']);
+Route::post('/logout' , [AuthController::class , 'logout']);
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
+/**post */
 Route::prefix('/post')->group(function() {
     Route::get('/list' , [PostController::class , 'getPostList']);
     Route::post('/create' ,[PostController::class , 'create']);
@@ -36,6 +38,7 @@ Route::prefix('/post')->group(function() {
     Route::get('/detail/{id}' , [PostController::class , 'getPostDetail']);
 });
 
+/**category */
 Route::get('/categories' , [CategoryController::class , 'getCategory']);
 Route::prefix('/category')->group(function(){
     Route::post('/create' ,[CategoryController::class , 'create']);
@@ -47,6 +50,7 @@ Route::prefix('/category')->group(function(){
     Route::put('/update/{id}' , [CategoryController::class , 'update']);
 });
 
+// comment
 Route::post('comment/create' , [CommentController::class , 'create']);
 
 

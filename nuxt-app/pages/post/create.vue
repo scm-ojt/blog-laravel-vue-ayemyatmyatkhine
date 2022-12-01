@@ -1,5 +1,6 @@
 <template>
     <div class="container">
+        <div v-if="successMessage" class="alert alert-success mt-5 success-alert" role="alert">{{ successMessage }}</div>
         <div class="card create-card my-5">
             <div class="card-header">
                 <h4 class="title text-center">Post Create</h4>
@@ -31,17 +32,17 @@
                             @input="updateApprovers"
                             name="category"
                             />
-                            <span v-if="errorMessage" class="required">{{ errorMessage.category[0] }}</span>
+                            <span v-if="errorMessage.category" class="required">{{ errorMessage.category[0] }}</span>
                     </div>
                     <div class="input-item mb-3">
                         <label for="">Title</label>
                         <input type="text" class="form-control" v-model="title" name="title">
-                        <span v-if="errorMessage" class="required">{{ errorMessage.title[0] }}</span>
+                        <span v-if="errorMessage.title" class="required">{{ errorMessage.title[0] }}</span>
                     </div>
                     <div class="input-item mb-3">
                         <label for="">Description</label>
                         <textarea id="" class="form-control" rows="4" name="description" v-model="description"></textarea>
-                        <span v-if="errorMessage" class="required">{{ errorMessage.description[0] }}</span>
+                        <span v-if="errorMessage.description" class="required">{{ errorMessage.description[0] }}</span>
                     </div>
                     <div class="input-item">
                         <button class="btn btn-secondary me-3" @click="reset"><font-awesome-icon :icon="['fas' , 'trash-arrow-up']" />&nbsp;Clear</button>
@@ -54,11 +55,15 @@
 </template>
 
 <script setup>
-    import { $fetch } from "ohmyfetch"
     import { onMounted } from "vue"
     import axios from 'axios'
+    import { useAuthStore } from '~/store/pinia'
+    definePageMeta ({
+        layout: "after-login",
+    })
+    const store = useAuthStore()
     const runtimeConfig = useRuntimeConfig();
-    const route = useRoute()
+    const router = useRouter()
     const categoryList = ref()
     const category = ref()
     const title = ref(null)
@@ -67,9 +72,9 @@
     const image = ref(null)
     const imageName = ref(null)
     const successMessage = ref()
-    const errorMessage = ref()
+    const errorMessage = ref({})
     const getCategories  = async () => {
-        await axios.get('http://127.0.0.1:8000/api/categories').then((response)=>{
+        await axios.get(runtimeConfig.public.apiBase +'/categories').then((response)=>{
             categoryList.value = response.data
         })  
     }
@@ -100,21 +105,23 @@
         let formData = new FormData()
         if ((selectedcategories != [] && title.value != null && description.value != null) && (imageName.value == null || imageName.value != null)) {
             for(var i =0 ; i< selectedcategories.value.length ; i++){
+                formData.append('user_id' , store.userId)
                 formData.append('title' , title.value)
                 formData.append('description' , description.value)
                 formData.append('category[]' , selectedcategories.value[i])
                 formData.append('image' , imageName.value)
             }
         }
-        await axios.post("http://127.0.0.1:8000/api/post/create", formData , {
+        await axios.post(runtimeConfig.public.apiBase +"/post/create", formData , {
             headers : {
                 'Accept' : 'application/json',
                 'Content-Type': 'application/json',
             },
         }).then((response) => {
             successMessage.value = response.data.successMessage
+            router.push('/post')
         }).catch((error) => {
-            errorMessage.value = error.response.data.errors 
+            errorMessage.value = error.response.data.errors
         })
     }
 

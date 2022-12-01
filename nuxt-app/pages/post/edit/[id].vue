@@ -1,5 +1,6 @@
 <template>
     <div class="container mt-5 min-vh-75">
+        <div v-if="successMessage" class="alert alert-success mt-5 success-alert" role="alert">{{ successMessage }}</div>
         <div class="card create-card my-5">
             <div class="card-header">
                 <h4 class="title text-center">Post Edit</h4>
@@ -14,7 +15,7 @@
                         <img v-else src="../../../assets/images/image1.webp" alt="" class="post-img" />
                     </template>
                 </div>
-                <form class="form" @submit.prevent="update" enctype="multipart/form-data">
+                <form class="form" enctype="multipart/form-data">
                     <div class="input-item mb-3">
                         <label for="image">Choose Image</label>
                         <input type="hidden" v-model="post.image">
@@ -46,8 +47,8 @@
                         <span v-if="errorMessage" class="required">{{ errorMessage.description[0] }}</span>
                     </div>
                     <div class="input-item">
-                        <button class="btn btn-secondary me-3" @click="reset"><font-awesome-icon :icon="['fas' , 'trash-arrow-up']" />&nbsp;Clear</button>
-                        <button class="btn btn-primary" type="submit"><font-awesome-icon :icon="['fas' , 'floppy-disk']" />&nbsp;Update</button>
+                        <button class="btn btn-secondary me-3" @click.prevent="reset"><font-awesome-icon :icon="['fas' , 'trash-arrow-up']" />&nbsp;Clear</button>
+                        <button class="btn btn-primary" @click.prevent="update"><font-awesome-icon :icon="['fas' , 'floppy-disk']" />&nbsp;Update</button>
                     </div>
                 </form>
             </div>
@@ -57,9 +58,9 @@
 
 <script setup>
     import axios from 'axios'
-    import { $fetch } from "ohmyfetch";
     const runtimeConfig = useRuntimeConfig();
     const imageUrl = runtimeConfig.public.url
+    const router = useRouter()
     const route = useRoute()
     const categoryList = ref()
     const categories = ref([])
@@ -68,7 +69,7 @@
     const imageName = ref('')
     const successMessage = ref()
     const errorMessage = ref()
-    const {data : post} = await axios.get(`http://127.0.0.1:8000/api/post/edit/${route.params.id}`)
+    const {data : post} = await axios.get(runtimeConfig.public.apiBase + `/post/edit/${route.params.id}`)
 
     // bind old categories into multiselect
     let i = 0
@@ -78,7 +79,7 @@
     
     // get category list for multiselect
     const getCategories  = async () => {
-        await axios.get('http://127.0.0.1:8000/api/categories').then((response)=>{
+        await axios.get(runtimeConfig.public.apiBase + '/categories').then((response)=>{
             categoryList.value = response.data
         })  
     }
@@ -109,22 +110,28 @@
     
     // update post
     async function update() {
-        let formData = new FormData()  
-        for(var i = 0; i < categories.value.length ; i++) {
-            formData.append('title' , post.title)
-            formData.append('description' , post.body)
-            formData.append('category[]' , categories.value[i])
-            if(post.image != null) { 
-                if(imageName.value == ''){
-                    formData.append('image' , post.image)
+        let formData = new FormData()
+        if ((categories != [] && post.title != null && post.body != null) && (post.image == null || post.image != null)) {  
+            for(var i = 0; i < categories.value.length ; i++) {
+                formData.append('title' , post.title)
+                formData.append('description' , post.body)
+                formData.append('category[]' , categories.value[i])
+                if(post.image != null) { 
+                    if(imageName.value == ''){
+                        formData.append('image' , post.image)
+                    }
+                    else {
+                        formData.append('image' , imageName.value)
+                    }
                 }
                 else {
                     formData.append('image' , imageName.value)
                 }
+                formData.append("_method", "put");
             }
-            else {
-                formData.append('image' , imageName.value)
-            }   
+        }
+        else {
+            formData.append("_method", "put");
         }
         // const updateData = {
         //     title: post.title,
@@ -132,19 +139,15 @@
         //     category: categories.value,
         //     image:post.image
         // }
-        await axios.put(`http://127.0.0.1:8000/api/post/update/${route.params.id}` , {
-            title: post.title,
-            description: post.body,
-            category: categories.value,
-            image:post.image,
-            headers : {
-                'Content-Type': 'multipart/form-data',
-            }
+        await axios.post(runtimeConfig.public.apiBase +`/post/update/${route.params.id}` , formData ,{
+            headers: { "Content-Type": "multipart/form-data" }
         }).then((response)=>{
+            console.log(response.data.successMessage)
             successMessage.value = response.data.successMessage
         }).catch((error)=>{
             errorMessage.value = error.response.data.errors
         })
+        router.push('/post')
     }
 
     function reset() {

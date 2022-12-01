@@ -5,8 +5,17 @@
     </div>
 </template>
 
-<script>
+<script setup>
+    import { useAuthStore } from '~/store/pinia'
     definePageMeta({
         layout: "default",
+    });
+    const store = useAuthStore()
+    const user = store.userName
+    console.log(user)
+    watchEffect(() => {
+        if (user) {
+            return navigateTo('/post');
+        }
     });
 </script>

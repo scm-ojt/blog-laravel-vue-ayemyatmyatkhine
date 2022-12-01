@@ -9,11 +9,15 @@ use Illuminate\Support\Facades\Log;
 
 class CommentController extends Controller
 {
+    /**
+     * create post's comment
+     * 
+     * @param Illuminate/Request $request
+     */
     public function create(Request $request)
     {
-        info($request->postId);
         $comment = new Comment;
-        $comment->user_id = 1;
+        $comment->user_id = $request->userId;
         $comment->post_id = $request->postId;
         $comment->body = $request->comment;
         $comment->created_at = Date('Y-m-d');

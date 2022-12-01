@@ -21,25 +21,39 @@ export default defineNuxtConfig({
 			src: 'bootstrap/dist/js/bootstrap.bundle.min.js'
 		}
 	],
+	alias: {
+		'class-validator': 'class-validator/cjs/index.js',
+	},
 	vite: {
 		define: {
 			'process.env.DEBUG': false,
 		},
+		optimizeDeps: {
+			exclude: ['class-validator']
+		}
 	},
 	plugins: [
 		"@/plugins/bootstrap.client.ts",
-		{ src: '~/plugins/vee-validate.js', ssr: true },
 	],
 	buildModules: [
-		'@nuxtjs/moment'
+		'@nuxtjs/moment',
+		["@nuxtjs/axios", { proxyHeaders: false }], "@nuxtjs/proxy" ,
+		'@pinia/nuxt'
 	],
 	axios: {
-		baseURL: 'http://127.0.0.1:8000/api',
+		credentials: true
 	},
-	modules: [["@nuxtjs/axios", { proxyHeaders: false }], "@nuxtjs/proxy"],
 	// modules: [
-	// 	['@nuxtjs/axios', { proxyHeaders: false }]
+		
 	// ],
+	// auth: {
+	// 	strategies: {
+	// 	  laravelSanctum: {
+	// 		provider: 'laravel/sanctum',
+	// 		url: 'http://localhost:8000',
+	// 	  },
+	// 	},
+	// },
 	// axios: {
 	// 	// See https://github.com/nuxt-community/axios-module#options
 	// 	baseURL: process.env.NUXT_PUBLIC_API_BASE,
@@ -49,6 +63,4 @@ export default defineNuxtConfig({
 	// 	  baseURL: process.env.NUXT_PUBLIC_API_BASE,
 	// 	},
 	// },
-	
-
 })

@@ -4,8 +4,8 @@
             <div class="card-body">
                 <div class="d-flex flex-row">
                     <div class="postImage">
-                        <img v-if="post.image != null" :src="imageUrl + `/storage/images/${post.image}`" alt="postImage" class="post-img image">
-                        <img  v-else src="../../assets/images/image1.webp" alt="" class="post-img">
+                        <img v-if="post.image == null || post.image == 'null'" src="../../assets/images/image1.webp" alt="postImage" class="post-img">
+                        <img  v-else :src="imageUrl + `/storage/images/${post.image}`" alt="" class="post-img image">
                     </div>
                     <div class="post-detail ms-4">
                         <h4>{{ post.title }}</h4>
@@ -42,19 +42,23 @@
 </template>
 
 <script setup>
-    import { $fetch } from "ohmyfetch";
-    import { onMounted , reactive } from "vue";
+    import axios from 'axios'
+    import { onMounted } from "vue";
     import moment from 'moment'
+    import { useAuthStore } from '~/store/pinia'
+    const store = useAuthStore()
+    definePageMeta({
+        layout: "after-login",
+    })
     const runtimeConfig = useRuntimeConfig()
     const route = useRoute()
     const imageUrl = runtimeConfig.public.url
     const postId = route.params.id
     const comment = ref()
     const post = ref({})
-    
     const getPost = async () => {
-        await useFetch(runtimeConfig.public.apiBase + `/post/detail/${postId}`).then((response)=>{
-            post.value = response.data.value
+        await axios.get(runtimeConfig.public.apiBase + `/post/detail/${postId}`).then((response)=>{
+            post.value = response.data
         })  
     }
     onMounted(getPost)
@@ -62,14 +66,19 @@
     // create comment
     async function createComment()
     {
-        await $fetch(runtimeConfig.public.apiBase + '/comment/create' , {
-            method : 'POST',
-            body : {
-                postId : route.params.id,
-                comment : comment.value
-            }
+        const data = {
+            userId : store.userId,
+            postId : route.params.id,
+            comment : comment.value
+        }
+        await axios.post(runtimeConfig.public.apiBase + '/comment/create' , data ,{
+            headers : {
+                'Accept' : 'application/json',
+                'Content-Type': 'application/json',
+            },
         })
-        getPost
+        comment.value = ''
+        getPost()
     }
 </script>
 

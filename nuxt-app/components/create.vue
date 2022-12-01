@@ -27,9 +27,8 @@
 </template>
 
 <script setup>
-	import { $fetch } from "ohmyfetch"
 	import axios from 'axios'
-	const config = useRuntimeConfig();
+	const config = useRuntimeConfig()
 	const name = ref();
 	const message = ref();
 	const errorMessage = ref()
@@ -40,21 +39,20 @@
 
 	// add new category
 	async function save() {
-		await $fetch(config.public.apiBase + "/category/create", {
-			method: "POST",
-			body: {
-				name: name.value,
-			},
+		const data = {
+			name: name.value
+		}
+		await axios.post(config.public.apiBase + "/category/create", data , {
 			headers : {
                 'Accept' : 'application/json',
                 'Content-Type': 'application/json'
             },
 		}).then((response) => {
-			message.value = response.successMessage
+			message.value = response.data.successMessage
 		}).catch((error)=>{
-			errorMessage.value = error.data.errors.name[0]
-			console.log(errorMessage.value)
+			errorMessage.value = error.response.data.errors.name[0]
 		})
+		parent.getCategories()
 	}
 
 	// update category
@@ -62,10 +60,9 @@
 		const updateData = {
 			categoryName : props.categoryName
 		}
-		await axios.put(`http://127.0.0.1:8000/api/category/update/${categoryId}` , updateData).then((response) =>{
+		await axios.put(config.public.apiBase + `/category/update/${categoryId}` , updateData).then((response) =>{
 			successMessage.value = response.data.successMessage
 		}).catch((error) => {
-			console.log(error.response.data.errors.categoryName[0])
 			errorMessage.value = error.response.data.errors.categoryName[0]
 		})
 	}

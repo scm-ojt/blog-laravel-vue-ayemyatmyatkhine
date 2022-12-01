@@ -6,6 +6,7 @@
         </div>
         <!-- list side -->
         <div class="list-side ms-5">
+            <div v-if="messages" class="alert alert-success" role="alert">{{ messages }}</div>
             <div class="header mb-4">
             <div class="create-btn">
                 <button type="button" class="btn btn-create" @click="view('null' , 'null')"><font-awesome-icon :icon="['fas' , 'plus']" class="icon"/>&nbsp;Create</button>
@@ -53,9 +54,9 @@
 </template>
 
 <script setup lang="ts">
-    import { $fetch } from "ohmyfetch"
     import { ref } from 'vue'
     import axios  from 'axios'
+    import { onMounted } from "vue"
     definePageMeta({
         layout: "after-login",
     });
@@ -65,16 +66,20 @@
     const categories = ref([])
     const filterCategories = ref([])
     const messages = ref()
-    // const runtimeConfig = useRuntimeConfig()
-    // const response  = await useFetch(runtimeConfig.public.apiBase + '/category/list')
-    await axios.get(`http://127.0.0.1:8000/api/category/list`).then((response)=> {
-        categories.value = response.data
-        filterCategories.value = categories.value 
-        console.log(filterCategories.value)
-    })
-       
-    
+    const runtimeConfig = useRuntimeConfig()
+    const getCategories  = async () => {
+        await axios.get(runtimeConfig.public.apiBase + `/category/list`).then((response)=> {
+            categories.value = response.data
+            filterCategories.value = categories.value 
+        })
+    }
+    onMounted(getCategories)
 
+    const onsuccessMessage = (successMessage) => {
+      console.log("fire")
+      messages.value = successMessage;
+    };
+       
     // create and update components
     async function view(params1 , params2) {
         categoryId.value = params1,
@@ -83,13 +88,13 @@
     
     //search category
     async function filterCategory(){
-        const response = await axios.get('http://127.0.0.1:8000/api/category/search' ,{params:{category:category.value}})
+        const response = await axios.get(runtimeConfig.public.apiBase + '/category/search' ,{params:{category:category.value}})
         filterCategories.value = response.data
     }
 
     // export csv file
     async function exportCsv(){
-        await useFetch(runtimeConfig.public.apiBase + '/category/export', {responseType:'blob' }).then((response)=>{
+        await axios.get(runtimeConfig.public.apiBase + '/category/export', {responseType:'blob' }).then((response)=>{
             const url = window.URL.createObjectURL(new Blob([response.data.value]))
             const link = document.createElement('a')
             link.href = url
@@ -101,11 +106,14 @@
     // delete category
     async function deleteCategory(id) {
         if (confirm('Are you sure you want to delete this category?')) {
-            await $fetch(runtimeConfig.public.apiBase + `/category/delete/${id}` , {method:'DELETE'}).then((response)=>{
-                messages.value = response.successMessage
+            await axios.delete(runtimeConfig.public.apiBase + `/category/delete/${id}` ).then((response)=>{
+                messages.value = response.data.successMessage
+                setTimeout(() => {
+                    messages.value = '';
+                }, 2000);
             })
         }
-        window.location.reload(true)
+        getCategories()
     }
 
     // file import modal

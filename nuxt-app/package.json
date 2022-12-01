@@ -8,23 +8,23 @@
     "postinstall": "nuxt prepare"
   },
   "devDependencies": {
-    "@types/bootstrap": "^5.2.5",
+    "@nuxtjs/supabase": "^0.3.0",
+    "@types/bootstrap": "^5.2.6",
     "nuxt": "3.0.0-rc.12"
   },
   "dependencies": {
-    "@fortawesome/free-solid-svg-icons": "^6.2.0",
-    "@fortawesome/vue-fontawesome": "^3.0.1",
+    "@fortawesome/free-solid-svg-icons": "^6.2.1",
+    "@fortawesome/vue-fontawesome": "^3.0.2",
     "@inertiajs/inertia-vue3": "^0.6.0",
     "@nuxtjs/axios": "^5.13.6",
     "@nuxtjs/fontawesome": "^1.1.2",
     "@nuxtjs/moment": "^1.6.1",
+    "@pinia/nuxt": "^0.4.6",
     "@popperjs/core": "^2.11.6",
-    "@vee-validate/rules": "^4.7.2",
-    "@vueform/multiselect": "^2.5.6",
-    "@vuelidate/core": "^2.0.0",
-    "@vuelidate/validators": "^2.0.0",
-    "bootstrap": "^5.2.2",
-    "ohmyfetch": "^0.4.20",
+    "@vueform/multiselect": "^2.5.7",
+    "bootstrap": "^5.2.3",
+    "ohmyfetch": "^0.4.21",
+    "pinia": "^2.0.27",
     "vue-bs-modal": "^0.7.9"
   }
 }

@@ -24,7 +24,7 @@ class PostController extends Controller
     public function create(PostRequest $request)
     {
         $post = new Post;
-        $post->user_id = 1;
+        $post->user_id = $request->user_id;
         if($request->hasFile('image')){
             $image = $request->file('image');
             $imageName = uniqid() . '_' . $image->getClientOriginalName();
@@ -114,7 +114,6 @@ class PostController extends Controller
 
     public function update(PostRequest $request , $id)
     {
-        log::debug($request->all());
         $post = Post::with('user')->with('categories')->where('id' , $id)->first();
         if($request->hasFile('image')){
             $image = $request->file('image');
