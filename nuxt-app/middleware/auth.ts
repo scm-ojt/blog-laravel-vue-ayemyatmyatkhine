@@ -1,14 +1,14 @@
 import { useAuthStore } from '~/store/pinia';
-
-export default defineNuxtRouteMiddleware(async (to) => {
-  const authStore = useAuthStore();
-
-  if (to.name !== 'login' && !localStorage.getItem('token')) {
-    return navigateTo('/login');
-  } 
-  // else if (to.name !== 'login' && !authStore.user) {
-  //   authStore.setAuthUser(await $fetch('/api/getauthuser', {
-  //     headers: authHeader,
-  //   }));
-  // }
+import editPost from '../pages/post/edit/[id].vue'
+export default defineNuxtRouteMiddleware((to , from) => {
+	const authStore = useAuthStore();
+	const isLoggin = authStore.isLoggedIn
+	if (to.name !== 'login' && !localStorage.getItem('token')) {
+		return navigateTo('/login');
+	}
+	else if(isLoggin && to.path === '/post/edit/'){
+		if(to.params.id !== from.params.id) {
+			return navigateTo('/post')
+		}
+	}
 });

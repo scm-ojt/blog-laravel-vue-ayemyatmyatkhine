@@ -35,7 +35,9 @@
 	const props = defineProps({
 		categoryId: String,
 		categoryName: String,
-	});
+	})
+
+	const emit = defineEmits(["successMessage"]);
 
 	// add new category
 	async function save() {
@@ -49,10 +51,11 @@
             },
 		}).then((response) => {
 			message.value = response.data.successMessage
+			emit("successMessage", message.value)
+			name.value = ''
 		}).catch((error)=>{
 			errorMessage.value = error.response.data.errors.name[0]
 		})
-		parent.getCategories()
 	}
 
 	// update category
@@ -61,7 +64,8 @@
 			categoryName : props.categoryName
 		}
 		await axios.put(config.public.apiBase + `/category/update/${categoryId}` , updateData).then((response) =>{
-			successMessage.value = response.data.successMessage
+			message.value = response.data.successMessage
+			emit("successMessage", message.value)
 		}).catch((error) => {
 			errorMessage.value = error.response.data.errors.categoryName[0]
 		})

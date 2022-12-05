@@ -2,7 +2,7 @@
     <div class="container mt-5 d-flex flex-row">
         <!-- create side -->
         <div class="create-side">
-            <create :category-id="categoryId" :category-name="categoryName" />
+            <create :category-id="categoryId" :category-name="categoryName" @successMessage="getMessage($event)"/>
         </div>
         <!-- list side -->
         <div class="list-side ms-5">
@@ -48,15 +48,17 @@
                 </tbody>
             </table>
         </div>
+        <PaginationComponent class="pagination-component" v-model="currentPage" :numberOfPages="numberOfPage"></PaginationComponent>
         </div>
         <fileImportModal></fileImportModal>
     </div>
 </template>
 
 <script setup lang="ts">
-    import { ref } from 'vue'
+    import { Ref , ref } from 'vue'
     import axios  from 'axios'
     import { onMounted } from "vue"
+    import { usePagination } from "../composable/useClientSidePagination";
     definePageMeta({
         layout: "after-login",
     });
@@ -64,21 +66,43 @@
     const categoryId = ref(null)
     const categoryName = ref()
     const categories = ref([])
-    const filterCategories = ref([])
+    // const filterCategories = ref([])
+    const filterCategories: Ref<category[]> = ref([]);
     const messages = ref()
+    const currentPage = ref(1)
+    const rowsPerPage = ref(10)
+    const numberOfPage = ref()
     const runtimeConfig = useRuntimeConfig()
+
+    interface category {
+        id: number;
+        name: string;
+    }
+
+    const { paginatedArray , numberOfPages } = usePagination<category>({
+        rowsPerPage,
+        arrayToPaginate: filterCategories,
+        currentPage
+    })
+    console.log(filterCategories)
+    // get categories list
     const getCategories  = async () => {
         await axios.get(runtimeConfig.public.apiBase + `/category/list`).then((response)=> {
-            categories.value = response.data
+            categories.value = response.data.data
+            numberOfPage.value = parseInt(response.data.last_page)
             filterCategories.value = categories.value 
         })
     }
     onMounted(getCategories)
 
-    const onsuccessMessage = (successMessage) => {
-      console.log("fire")
-      messages.value = successMessage;
-    };
+    //get success msg from child component
+    function getMessage(data) {
+        messages.value = data
+        setTimeout(() => {
+                    messages.value = '';
+                }, 2000);
+        getCategories()
+    }
        
     // create and update components
     async function view(params1 , params2) {
@@ -88,7 +112,7 @@
     
     //search category
     async function filterCategory(){
-        const response = await axios.get(runtimeConfig.public.apiBase + '/category/search' ,{params:{category:category.value}})
+        const response = await axios.get(runtimeConfig.public.apiBase + `/category/search` ,{params:{category:category.value}})
         filterCategories.value = response.data
     }
 
@@ -103,6 +127,7 @@
             link.click()
         })
     }
+
     // delete category
     async function deleteCategory(id) {
         if (confirm('Are you sure you want to delete this category?')) {
@@ -125,7 +150,6 @@
         }
         return modal
     }
-
     function toggleModal() {
         getModal().show()
     }

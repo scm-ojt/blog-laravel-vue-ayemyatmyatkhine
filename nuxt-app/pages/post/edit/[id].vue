@@ -58,10 +58,17 @@
 
 <script setup>
     import axios from 'axios'
-    const runtimeConfig = useRuntimeConfig();
+    import { useAuthStore } from '~/store/pinia'
+    const runtimeConfig = useRuntimeConfig()
     const imageUrl = runtimeConfig.public.url
+    const store = useAuthStore()
     const router = useRouter()
     const route = useRoute()
+    definePageMeta({
+        layout: "after-login",
+        middleware : ['auth'],
+        meta: { requiresAuth: true }
+    })
     const categoryList = ref()
     const categories = ref([])
     const preview = ref(null)
@@ -69,11 +76,11 @@
     const imageName = ref('')
     const successMessage = ref()
     const errorMessage = ref()
+    const userId = store.userId
     const {data : post} = await axios.get(runtimeConfig.public.apiBase + `/post/edit/${route.params.id}`)
 
     // bind old categories into multiselect
-    let i = 0
-    for(i = 0; i < post.categories.length; i++) {
+    for(let i = 0; i < post.categories.length; i++) {
         categories.value.push(post.categories[i].id)
     }
     
@@ -133,21 +140,14 @@
         else {
             formData.append("_method", "put");
         }
-        // const updateData = {
-        //     title: post.title,
-        //     description: post.body,
-        //     category: categories.value,
-        //     image:post.image
-        // }
         await axios.post(runtimeConfig.public.apiBase +`/post/update/${route.params.id}` , formData ,{
-            headers: { "Content-Type": "multipart/form-data" }
+            // headers: { "Content-Type": "multipart/form-data" }
         }).then((response)=>{
-            console.log(response.data.successMessage)
             successMessage.value = response.data.successMessage
+            router.push('/post')
         }).catch((error)=>{
             errorMessage.value = error.response.data.errors
         })
-        router.push('/post')
     }
 
     function reset() {
@@ -157,6 +157,13 @@
         post.body = null
         categories.value = []
     }
+
+    //prevent entering from url 
+    watchEffect(() => {
+        if (userId != post.user.id) {
+            return navigateTo('/post');
+        }
+    });
 </script>
 
 <style src="../../../assets/css/list.css"></style>

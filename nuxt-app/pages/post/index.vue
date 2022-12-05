@@ -1,8 +1,8 @@
 <template>
     <div class="container mt-5 min-vh-75">
+        <div v-if="messages" class="alert alert-success" role="alert">{{ messages }}</div>
         <div class="header mb-5">
             <div class="create-btn">
-                <div v-if="messages" class="alert alert-success" role="alert">{{ messages }}</div>
                 <NuxtLink class="btn btn-create" to="post/create"><font-awesome-icon :icon="['fas' , 'plus']" class="icon"/>&nbsp;Create</NuxtLink>
                 <button class="btn btn-import mx-2" @click="toggleModal()"><font-awesome-icon :icon="['fas', 'file-import']" class="icon"/>&nbsp;Import</button>
                 <button class="btn btn-export" @click="exportCsv"><font-awesome-icon :icon="['fas' ,'file-export']" class="icon"/>&nbsp;Export</button>
@@ -41,7 +41,7 @@
                         <td v-else>{{ data.categories[0].name }}</td>
                         <td>{{ data.title }}</td>
                         <td>{{ data.body }}</td>
-                        <td v-if="(store.userId == data.user.id)">
+                        <td v-if="store.userId == data.user.id">
                             <NuxtLink class="btn btn-primary btn-edit my-2" :to="`post/edit/${data.id}`"><font-awesome-icon :icon="['fas','pen-to-square']" /></NuxtLink>
                             <button class="btn btn-danger btn-delete mx-2" @click.prevent="deletePost(data.id)"><font-awesome-icon :icon="['fas', 'trash-can']" /></button>
                             <NuxtLink class="btn btn-info btn-detail" :to="`post/${data.id}`"><font-awesome-icon :icon="['fas', 'circle-info']" class="info-icon" /></NuxtLink>
@@ -56,6 +56,7 @@
                 </tbody>
             </table>
         </div>
+        <PaginationComponent class="pagination-component" v-model="currentPage" :numberOfPages="numberOfPages"></PaginationComponent>
         <fileImportModal></fileImportModal>
     </div>
 </template>
@@ -66,31 +67,39 @@
     import { useAuthStore } from '~/store/pinia'
     const store = useAuthStore()
     const { $bootstrap } = useNuxtApp()
+    const router = useRouter()
     definePageMeta({
         layout: "after-login",
     });
     const posts = ref([])
     const filterList = ref([])
     const searchData = ref()
-    const isOpen = ref(false)
     const messages = ref()
     const import_file = ref()
     const loginUser = store.user
+    const loginId = store.userId
+    const posted_user = ref([])
+    const currentPage = ref(1);
+    const rowsPerPage = ref(10);
+    const numberOfPages = ref()
     const runtimeConfig = useRuntimeConfig(); 
     const imageUrl = runtimeConfig.public.url
     const postList = async () => {
         await axios.get(runtimeConfig.public.apiBase +'/post/list').then((response)=>{
-            posts.value = response.data
+            posts.value = response.data.data
+            numberOfPages.value = response.data.last_page
             filterList.value = posts.value
         })
     }
     onMounted(postList)
 
+    //search post
     async function filter() {
         const response = await axios.get(runtimeConfig.public.apiBase +'/post/search' ,{params:{searchData:searchData.value}});
         filterList.value = response.data
     }
 
+    // export csv file
     async function exportCsv()
     {
         await axios.get(runtimeConfig.public.apiBase + '/post/export', {responseType:'blob' }).then((response)=>{
@@ -103,6 +112,7 @@
         })
     }
 
+    //delete post
     async function deletePost(id){
         if(confirm('Are you sure you want to delete this post?')) {
             await axios.delete(runtimeConfig.public.apiBase + `/post/delete/${id}` , {method:'DELETE'}).then((response)=>{
@@ -123,7 +133,6 @@
         }
         return modal
     }
-
     function toggleModal() {
         getModal().show()
     }

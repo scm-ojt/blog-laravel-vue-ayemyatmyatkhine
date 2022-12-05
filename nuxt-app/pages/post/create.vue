@@ -14,7 +14,7 @@
                         <img src="../../assets/images/image1.webp" alt="" class="post-img">
                     </template>
                 </div>
-                <form class="form" @submit.prevent="save" enctype="multipart/form-data">
+                <form class="form" enctype="multipart/form-data">
                     <div class="input-item mb-3">
                         <label for="image">Choose Image</label>
                         <input type="file" name="image" accept="image/*" @change="previewImage" class="form-control" id="my-file" ref="imageInput">
@@ -46,7 +46,7 @@
                     </div>
                     <div class="input-item">
                         <button class="btn btn-secondary me-3" @click="reset"><font-awesome-icon :icon="['fas' , 'trash-arrow-up']" />&nbsp;Clear</button>
-                        <button class="btn btn-primary" type="submit"><font-awesome-icon :icon="['fas' , 'floppy-disk']" />&nbsp;Save</button>
+                        <button class="btn btn-primary" @click.prevent="save"><font-awesome-icon :icon="['fas' , 'floppy-disk']" />&nbsp;Save</button>
                     </div>
                 </form>
             </div>

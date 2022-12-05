@@ -17,10 +17,12 @@
                                 <label for="">By</label><span class="mx-1">:</span><span>{{ post.user?.name }}</span>
                             </div>
                         </div>
-                        <div class="mt-3 d-flex flex-row" v-for="category in post.categories" :key="category.id">
-                            <div class="category">{{category['name']}}</div>
+                        <div class="mt-3">
+                            <span class="category me-2" v-for="category in post.categories" :key="category.id">
+                                {{ category['name'] }}
+                            </span>
                         </div>
-                        <div class="paragraph mt-3">{{post.body}}</div>
+                        <div class="paragraph mt-3">{{ post.body }}</div>
                     </div>
                 </div>
                 <div class="comment">

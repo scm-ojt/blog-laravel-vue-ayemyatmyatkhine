@@ -38,29 +38,10 @@ export default defineNuxtConfig({
 	buildModules: [
 		'@nuxtjs/moment',
 		["@nuxtjs/axios", { proxyHeaders: false }], "@nuxtjs/proxy" ,
-		'@pinia/nuxt'
+		'@pinia/nuxt',
 	],
 	axios: {
 		credentials: true
 	},
-	// modules: [
-		
-	// ],
-	// auth: {
-	// 	strategies: {
-	// 	  laravelSanctum: {
-	// 		provider: 'laravel/sanctum',
-	// 		url: 'http://localhost:8000',
-	// 	  },
-	// 	},
-	// },
-	// axios: {
-	// 	// See https://github.com/nuxt-community/axios-module#options
-	// 	baseURL: process.env.NUXT_PUBLIC_API_BASE,
-	// },
-	// publicRuntimeConfig: {
-	// 	axios: {
-	// 	  baseURL: process.env.NUXT_PUBLIC_API_BASE,
-	// 	},
-	// },
+	middleware: ['auth'],
 })

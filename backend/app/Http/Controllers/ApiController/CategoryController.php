@@ -26,7 +26,7 @@ class CategoryController extends Controller
 
     public function getCategoryList(Request $request)
     {
-        $category = Category::get();
+        $category = Category::orderBy('id' , 'DESC')->paginate(10);
         return response()->json($category);
     }
 
@@ -45,7 +45,6 @@ class CategoryController extends Controller
     public function search(Request $request)
     {
         $name = $request->category;
-        Log::debug($name);
         $category = Category::where('name' , 'like' , '%'.$name.'%')->get();
         return response()->json($category);
     }

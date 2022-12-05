@@ -51,7 +51,7 @@ class PostController extends Controller
     public function getPostList(Request $request)
     {
         $posts = Post::with('user')
-                ->with('categories')->get(); 
+                ->with('categories')->orderBy('id' , 'DESC')->paginate(10); 
         return response()->json($posts);   
     }
 

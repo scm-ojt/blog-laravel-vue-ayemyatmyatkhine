@@ -20,7 +20,6 @@
 </template>
 
 <script setup>
-    import axios from 'axios'
     import { useAuthStore } from '~/store/pinia'
     const store = useAuthStore()
     definePageMeta({
