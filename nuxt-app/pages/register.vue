@@ -60,21 +60,16 @@
             },
         }).then((response)=>{
             successMessage.value = response.data.successMessage
-            success.value = true
-        }).catch((error)=>{
-            errorMessage.value = error.response.data.errors
-            success.value = false
-        })
-        if(success.value){
             const data = {
                 email : email.value,
                 password : password.value
             }
-            console.log(data)
             store.login(data).then((response)=>{
                 router.push('/post')
             })
-        }
+        }).catch((error)=>{
+            errorMessage.value = error.response.data.errors
+        })
     }
 </script>
 
