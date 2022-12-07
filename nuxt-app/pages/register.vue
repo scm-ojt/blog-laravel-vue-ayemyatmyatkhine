@@ -44,7 +44,7 @@
     const confirm_password = ref()
     const successMessage = ref()
     const errorMessage = ref({})
-    // register new user
+    const success = ref(true)
     async function register() {
         const formData = new FormData()
         if (name.value != null && email.value != null && password.value != null && confirm_password.value != null || (name.value != null || email.value != null || password.value != null || confirm_password.value != null)) {
@@ -60,16 +60,21 @@
             },
         }).then((response)=>{
             successMessage.value = response.data.successMessage
+            success.value = true
+        }).catch((error)=>{
+            errorMessage.value = error.response.data.errors
+            success.value = false
+        })
+        if(success.value){
             const data = {
                 email : email.value,
                 password : password.value
             }
+            console.log(data)
             store.login(data).then((response)=>{
                 router.push('/post')
             })
-        }).catch((error)=>{
-            errorMessage.value = error.response.data.errors
-        })
+        }
     }
 </script>
 
