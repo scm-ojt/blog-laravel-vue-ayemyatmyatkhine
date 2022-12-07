@@ -29,9 +29,13 @@
 
 <script setup>
     import axios from 'axios'
+    import { useAuthStore } from '~/store/pinia'
+
     definePageMeta({
         layout: "default",
     });
+
+    const store = useAuthStore()
     const runtimeConfig = useRuntimeConfig()
     const router = useRouter()
     const name = ref()
@@ -40,7 +44,7 @@
     const confirm_password = ref()
     const successMessage = ref()
     const errorMessage = ref({})
-    const success = ref(true)
+    // register new user
     async function register() {
         const formData = new FormData()
         if (name.value != null && email.value != null && password.value != null && confirm_password.value != null || (name.value != null || email.value != null || password.value != null || confirm_password.value != null)) {
@@ -56,14 +60,16 @@
             },
         }).then((response)=>{
             successMessage.value = response.data.successMessage
-            success.value = true
+            const data = {
+                email : email.value,
+                password : password.value
+            }
+            store.login(data).then((response)=>{
+                router.push('/post')
+            })
         }).catch((error)=>{
             errorMessage.value = error.response.data.errors
-            success.value = false
         })
-        if(success.value){
-            router.push('/login')
-        }
     }
 </script>
 

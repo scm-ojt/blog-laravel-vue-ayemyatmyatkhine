@@ -38,10 +38,12 @@ class PostController extends Controller
         $post->body = $request->description;
         $post->created_at = Date('Y-m-d');
         $post->save();
+        //for category
         $categories[] = $request->category;
         foreach($categories as $category){
             $post->categories()->attach($category);
         }
+
         return response()->json(['successMessage' => 'Post created successfully.']);
     }
 
@@ -52,15 +54,17 @@ class PostController extends Controller
     {
         $posts = Post::with('user')
                 ->with('categories')->orderBy('id' , 'DESC')->paginate(10); 
+
         return response()->json($posts);   
     }
 
     /**
      * delete post by id
      */
-    public function delete($id)
+    public function delete(Post $post)
     {
-        Post::where('id' , $id)->delete();
+        $post->delete();
+
         return response()->json(['successMessage' => 'Post deleted successfully']);
     }
 
@@ -76,6 +80,7 @@ class PostController extends Controller
                 ->orWhereHas('user', function ($user) use ($searchData) {
                     $user->where('name', 'like', "%" . $searchData . "%");
         })->get();
+
         return response()->json($posts);
     }
 
@@ -109,9 +114,15 @@ class PostController extends Controller
     public function edit($id)
     {
         $post = Post::with('user')->with('categories')->where('id' , $id)->first();
+
         return response()->json($post);
     }
 
+    /**
+     * update post
+     * 
+     * @param Illuminate/Request PostRequest , int $id
+     */
     public function update(PostRequest $request , $id)
     {
         $post = Post::with('user')->with('categories')->where('id' , $id)->first();
@@ -128,6 +139,7 @@ class PostController extends Controller
         $post->body = $request->description;
         $post->updated_at = Date('Y-m-d');
         $post->update();
+        //for category
         $categories = $request->category;
         $categoryPost = CategoryPost::where('post_id' , $id)->get();
         $categoryPosts = [];
@@ -148,13 +160,20 @@ class PostController extends Controller
                 }
             }
         }
+
         return response()->json(['successMessage' => 'Update Successfully']);
     }
 
+    /**
+     * get post detail
+     * 
+     * @param int $id
+     * @return Object $post
+     */
     public function getPostDetail($id)
     {
-        //$post = Post::where('id' , $id)->with('user')->with('categories')->with('comments.user')->first()->toArray();
         $post = Post::where('id' , $id)->with(['user' , 'categories' , 'comments.user' ])->first()->toArray();
+
         return response()->json($post);
     }
 }

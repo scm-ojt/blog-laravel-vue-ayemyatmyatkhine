@@ -29,7 +29,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::prefix('/post')->group(function() {
     Route::get('/list' , [PostController::class , 'getPostList']);
     Route::post('/create' ,[PostController::class , 'create']);
-    Route::delete('/delete/{id}' , [PostController::class , 'delete']);
+    Route::delete('/delete/{post}' , [PostController::class , 'delete']);
     Route::get('/search', [PostController::class , 'search']);
     Route::get('/export' , [PostController::class , 'export']);
     Route::post('/import' , [PostController::class , 'import']);
@@ -43,7 +43,7 @@ Route::get('/categories' , [CategoryController::class , 'getCategory']);
 Route::prefix('/category')->group(function(){
     Route::post('/create' ,[CategoryController::class , 'create']);
     Route::get('/list' , [CategoryController::class , 'getCategoryList']);
-    Route::delete('/delete/{id}' , [CategoryController::class , 'delete']);
+    Route::delete('/delete/{category}' , [CategoryController::class , 'delete']);
     Route::get('/export' , [CategoryController::class , 'export']);
     Route::get('/search' , [CategoryController::class , 'search']);
     Route::post('/import' , [CategoryController::class , 'import']);

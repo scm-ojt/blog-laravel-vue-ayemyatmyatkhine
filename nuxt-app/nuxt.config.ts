@@ -21,26 +21,23 @@ export default defineNuxtConfig({
 			src: 'bootstrap/dist/js/bootstrap.bundle.min.js'
 		}
 	],
-	alias: {
-		'class-validator': 'class-validator/cjs/index.js',
-	},
 	vite: {
 		define: {
 			'process.env.DEBUG': false,
 		},
-		optimizeDeps: {
-			exclude: ['class-validator']
-		}
 	},
 	plugins: [
 		"@/plugins/bootstrap.client.ts",
+		"@/plugins/pagination.d.ts"
 	],
 	buildModules: [
 		'@nuxtjs/moment',
 		["@nuxtjs/axios", { proxyHeaders: false }], "@nuxtjs/proxy" ,
-		'@pinia/nuxt',
+		'@pinia/nuxt'
 	],
+	modules: ['bootstrap-vue/nuxt'],
 	axios: {
+		apiBase : '',
 		credentials: true
 	},
 	middleware: ['auth'],

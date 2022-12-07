@@ -93,7 +93,7 @@
     onMounted(getCategories)
 
     // update selected category
-    const selectedcategories = []
+  
     function updateApprovers(categories) {
         let approvers = [];
         categories.forEach((category) => {
@@ -163,7 +163,7 @@
         if (userId != post.user.id) {
             return navigateTo('/post');
         }
-    });
+    })
 </script>
 
 <style src="../../../assets/css/list.css"></style>

@@ -3,11 +3,9 @@ import axios from "axios";
 
 import { usePagination } from "~/composable/useClientSidePagination";
 
-const URL = "http://127.0.0.1:8000/api";
-
 export interface Todo {
   id: number;
-  title: string;
+  name: string;
 }
 
 export function useTodosApi(
@@ -15,7 +13,6 @@ export function useTodosApi(
   rowsPerPage?: Ref<number>
 ) {
   const todos: Ref<Todo[]> = ref([]);
-  const todosAreLoading = ref(false);
 
   const { paginatedArray, numberOfPages } = usePagination<Todo>({
     rowsPerPage,
@@ -24,15 +21,13 @@ export function useTodosApi(
   });
 
   const loadTodos = async () => {
-    todosAreLoading.value = true;
     try {
-      const result = await axios.get(URL);
-      todos.value = result.data;
+      await axios.get('http://127.0.0.1:8000/api/category/list').then((response)=>{
+        todos.value = response.data.data
+      });
     } catch (err) {
       console.log(err);
-    } finally {
-      todosAreLoading.value = false;
-    }
+    } 
   };
   return {
     todos: paginatedArray,

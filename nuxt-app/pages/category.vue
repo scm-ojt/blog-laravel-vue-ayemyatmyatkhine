@@ -48,7 +48,13 @@
                 </tbody>
             </table>
         </div>
-        <PaginationComponent class="pagination-component" v-model="currentPage" :numberOfPages="numberOfPage"></PaginationComponent>
+        <!-- <pagination :data="filterCategories" @pagination-change-page="getCategories" v-model="page"></pagination> -->
+        <b-pagination
+      v-model="currentPage"
+      :total-rows="totalPages"
+      :per-page="perPage"
+    ></b-pagination>
+
         </div>
         <fileImportModal></fileImportModal>
     </div>
@@ -58,7 +64,6 @@
     import { Ref , ref } from 'vue'
     import axios  from 'axios'
     import { onMounted } from "vue"
-    import { usePagination } from "../composable/useClientSidePagination";
     definePageMeta({
         layout: "after-login",
     });
@@ -66,30 +71,19 @@
     const categoryId = ref(null)
     const categoryName = ref()
     const categories = ref([])
-    // const filterCategories = ref([])
-    const filterCategories: Ref<category[]> = ref([]);
+    const filterCategories = ref([])
     const messages = ref()
-    const currentPage = ref(1)
-    const rowsPerPage = ref(10)
-    const numberOfPage = ref()
+    const currentPage = 1
+    const totalPages = ref()
+    const perPage = ref()
+    const page = ref()
     const runtimeConfig = useRuntimeConfig()
 
-    interface category {
-        id: number;
-        name: string;
-    }
-
-    const { paginatedArray , numberOfPages } = usePagination<category>({
-        rowsPerPage,
-        arrayToPaginate: filterCategories,
-        currentPage
-    })
-    console.log(filterCategories)
     // get categories list
     const getCategories  = async () => {
-        await axios.get(runtimeConfig.public.apiBase + `/category/list`).then((response)=> {
+        await axios.get(runtimeConfig.public.apiBase + `/category/list?page=`+page.value).then((response)=> {
             categories.value = response.data.data
-            numberOfPage.value = parseInt(response.data.last_page)
+            totalPages.value = response.data.total
             filterCategories.value = categories.value 
         })
     }

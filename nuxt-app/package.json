@@ -9,7 +9,9 @@
   },
   "devDependencies": {
     "@nuxtjs/supabase": "^0.3.0",
+    "@pinia-plugin-persistedstate/nuxt": "^1.0.0",
     "@types/bootstrap": "^5.2.6",
+    "laravel-vue-pagination": "^3.0.0-beta.1",
     "nuxt": "3.0.0-rc.12"
   },
   "dependencies": {
@@ -23,8 +25,11 @@
     "@popperjs/core": "^2.11.6",
     "@vueform/multiselect": "^2.5.7",
     "bootstrap": "^5.2.3",
+    "bootstrap-vue": "^2.23.1",
     "ohmyfetch": "^0.4.21",
     "pinia": "^2.0.27",
-    "vue-bs-modal": "^0.7.9"
+    "pinia-plugin-persistedstate": "^3.0.1",
+    "vue-bs-modal": "^0.7.9",
+    "vuejs-paginate-next": "^1.0.2"
   }
 }

@@ -15,6 +15,9 @@ use App\Http\Requests\CategoryUpdateRequest;
 
 class CategoryController extends Controller
 {
+    /**
+     * create new category
+     */
     public function create(CategoryRequest $request)
     {
         $category = new Category;
@@ -27,18 +30,21 @@ class CategoryController extends Controller
     public function getCategoryList(Request $request)
     {
         $category = Category::orderBy('id' , 'DESC')->paginate(10);
+
         return response()->json($category);
     }
 
     public function getCategory()
     {
         $category = Category::select('id as value' , 'name as label')->get();
+
         return response()->json($category);
     }
 
-    public function delete($id)
+    public function delete(Category $category)
     {
-        Category::where('id' , $id)->delete();
+        $category->delete();
+
         return response()->json(['successMessage' => 'Category deleted successfully.']);
     }
 
@@ -46,6 +52,7 @@ class CategoryController extends Controller
     {
         $name = $request->category;
         $category = Category::where('name' , 'like' , '%'.$name.'%')->get();
+
         return response()->json($category);
     }
 
@@ -71,6 +78,7 @@ class CategoryController extends Controller
         $category->name = $request->categoryName;
         $category->updated_at = Date('Y-m-d');
         $category->update();
+
         return response()->json(['successMessage' => 'Update Successfully']);
     }
 }

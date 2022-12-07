@@ -35,20 +35,22 @@
 
 <script setup>
     import {useAuthStore} from '~/store/pinia'
-    import { onMounted } from 'vue';
+
     definePageMeta({
         middleware: 'auth',
     });
+    
     const store = useAuthStore()
     const router = useRouter()
-    const user = store.userName
+    const user = store.user
     const logout = async() => {
         store.logout()
-        router.push('/login')
+        router.push('/login')  
     }
+
     watchEffect(() => {
         if (!user) {
-            return navigateTo('/login');
+            return navigateTo('/login')
         }
     });
 </script>

@@ -12,7 +12,6 @@
     });
     const store = useAuthStore()
     const user = store.userName
-    console.log(user)
     watchEffect(() => {
         if (user) {
             return navigateTo('/post');
