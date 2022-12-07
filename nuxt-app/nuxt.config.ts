@@ -28,14 +28,13 @@ export default defineNuxtConfig({
 	},
 	plugins: [
 		"@/plugins/bootstrap.client.ts",
-		"@/plugins/pagination.d.ts"
 	],
 	buildModules: [
 		'@nuxtjs/moment',
 		["@nuxtjs/axios", { proxyHeaders: false }], "@nuxtjs/proxy" ,
-		'@pinia/nuxt'
+		'@pinia/nuxt',
+		'bootstrap-vue/nuxt'
 	],
-	modules: ['bootstrap-vue/nuxt'],
 	axios: {
 		apiBase : '',
 		credentials: true

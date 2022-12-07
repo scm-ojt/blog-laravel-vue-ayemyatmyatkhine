@@ -4,16 +4,16 @@
         <h4 class="title text-center mt-2 mb-4">Please Login In</h4>
         <form action="" class="login-form" @submit.prevent="login">
             <div>
-                <input type="text" class="form-control" v-model="email" placeholder="Please enter email">
+                <input type="text" class="form-control" v-model="email" placeholder="Please enter email" autocomplete="off">
                 <span v-if="errorMessage.email" class="required">{{ errorMessage.email[0] }}</span>
                 <span v-if="errorMessage.errorMessage" class="required">{{ errorMessage.errorMessage }}</span>
             </div>
             <div class="my-4">
-                <input type="password" class="form-control" v-model="password" placeholder="Please enter password">
+                <input type="password" class="form-control" v-model="password" placeholder="Please enter password" autocomplete="off">
                 <span v-if="errorMessage.password" class="required">{{ errorMessage.password[0] }}</span>
             </div>
             <div class="mb-5">
-                <button class="btn btn-custom form-control" type="submit">Sing In</button>
+                <button class="btn btn-custom form-control" type="submit">Sign In</button>
             </div>
         </form>
     </div>

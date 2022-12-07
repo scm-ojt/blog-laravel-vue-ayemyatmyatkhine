@@ -56,7 +56,13 @@
                 </tbody>
             </table>
         </div>
-        <PaginationComponent class="pagination-component" v-model="currentPage" :numberOfPages="numberOfPages"></PaginationComponent>
+        <Paginate 
+            :page-count="numberOfPages" 
+            v-model="page"
+            :data="filterList"
+            :prev-text="'Prev'" 
+            :next-text="'Next'"
+            :click-handler="postList"></Paginate>
         <fileImportModal></fileImportModal>
     </div>
 </template>
@@ -65,27 +71,24 @@
     import axios from 'axios'
     import { onMounted } from "vue"
     import { useAuthStore } from '~/store/pinia'
-    const store = useAuthStore()
-    const { $bootstrap } = useNuxtApp()
-    const router = useRouter()
+    import Paginate from "vuejs-paginate-next";
+
     definePageMeta({
         layout: "after-login",
     });
+
+    const store = useAuthStore()
+    const { $bootstrap } = useNuxtApp()
     const posts = ref([])
     const filterList = ref([])
     const searchData = ref()
     const messages = ref()
-    const import_file = ref()
-    const loginUser = store.user
-    const loginId = store.userId
-    const posted_user = ref([])
-    const currentPage = ref(1);
-    const rowsPerPage = ref(10);
     const numberOfPages = ref()
+    const page = ref()
     const runtimeConfig = useRuntimeConfig(); 
     const imageUrl = runtimeConfig.public.url
     const postList = async () => {
-        await axios.get(runtimeConfig.public.apiBase +'/post/list').then((response)=>{
+        await axios.get(runtimeConfig.public.apiBase +'/post/list?page='+page.value).then((response)=>{
             posts.value = response.data.data
             numberOfPages.value = response.data.last_page
             filterList.value = posts.value

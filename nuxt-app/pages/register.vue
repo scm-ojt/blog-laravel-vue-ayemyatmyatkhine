@@ -21,7 +21,7 @@
                 <span v-if="errorMessage.confirm_password" class="required">{{ errorMessage.confirm_password[0] }}</span>
             </div>
             <div class="mb-5">
-                <button class="btn btn-custom form-control" type="submit">Sing Up</button>
+                <button class="btn btn-custom form-control" type="submit">Sign Up</button>
             </div>
         </form>
     </div>

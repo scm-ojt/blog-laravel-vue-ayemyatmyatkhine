@@ -48,13 +48,13 @@
                 </tbody>
             </table>
         </div>
-        <!-- <pagination :data="filterCategories" @pagination-change-page="getCategories" v-model="page"></pagination> -->
-        <b-pagination
-      v-model="currentPage"
-      :total-rows="totalPages"
-      :per-page="perPage"
-    ></b-pagination>
-
+        <Paginate 
+            :page-count="totalPages" 
+            v-model="page"
+            :data="filterCategories"
+            :prev-text="'Prev'" 
+            :next-text="'Next'"
+            :click-handler="getCategories"></Paginate>
         </div>
         <fileImportModal></fileImportModal>
     </div>
@@ -64,6 +64,7 @@
     import { Ref , ref } from 'vue'
     import axios  from 'axios'
     import { onMounted } from "vue"
+    import Paginate from "vuejs-paginate-next";
     definePageMeta({
         layout: "after-login",
     });
@@ -73,9 +74,7 @@
     const categories = ref([])
     const filterCategories = ref([])
     const messages = ref()
-    const currentPage = 1
     const totalPages = ref()
-    const perPage = ref()
     const page = ref()
     const runtimeConfig = useRuntimeConfig()
 
@@ -83,7 +82,7 @@
     const getCategories  = async () => {
         await axios.get(runtimeConfig.public.apiBase + `/category/list?page=`+page.value).then((response)=> {
             categories.value = response.data.data
-            totalPages.value = response.data.total
+            totalPages.value = response.data.last_page
             filterCategories.value = categories.value 
         })
     }
@@ -150,4 +149,6 @@
 </script>
 
 
-<style src="../assets/css/list.css"></style>
+<style src="../assets/css/list.css">
+    /* @import "https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css"; */
+</style>
