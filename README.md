@@ -17,6 +17,7 @@ git clone https://github.com/scm-ojt/blog-laravel-vue-ayemyatmyatkhine.git
   - php artisan key:generate
 - Run the database migrations (Set the database connection in .env before migrating)
   - php artisan migrate
+- php artisan storage:link
 - Start the local development server
   - php artisan serve
 - cd nuxt-app
