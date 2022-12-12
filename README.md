@@ -23,3 +23,9 @@ git clone https://github.com/scm-ojt/blog-laravel-vue-ayemyatmyatkhine.git
   - npm install
   - npm run dev
 - Use ```http://localhost:3000/``` to run nuxt 
+
+![Screenshot 2022-12-12 113745](https://user-images.githubusercontent.com/97345280/206989408-1a983f29-5f4a-4366-b84c-f4dd38fa0880.png)
+
+![Screenshot 2022-12-12 114110](https://user-images.githubusercontent.com/97345280/206989478-eca9e20d-ca6c-4c08-9181-e40d21fa8b01.png)
+
+![Screenshot 2022-12-12 141335](https://user-images.githubusercontent.com/97345280/206989543-cffa25a3-98d7-4f45-ab51-b33410ed0f58.png)
