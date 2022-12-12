@@ -20,7 +20,7 @@ class CommentController extends Controller
         $comment->user_id = $request->userId;
         $comment->post_id = $request->postId;
         $comment->body = $request->comment;
-        $comment->created_at = Date('Y-m-d');
+        $comment->created_at = Date('Y-m-d H:i:s');
         $comment->save();
     }
 }

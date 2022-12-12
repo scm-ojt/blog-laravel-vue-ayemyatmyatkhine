@@ -62,7 +62,8 @@
             :data="filterList"
             :prev-text="'Prev'" 
             :next-text="'Next'"
-            :click-handler="postList"></Paginate>
+            :click-handler="postList">
+        </Paginate>
         <fileImportModal></fileImportModal>
     </div>
 </template>

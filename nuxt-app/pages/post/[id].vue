@@ -33,8 +33,9 @@
                     <div class="all-comment">
                         <label for="">All comments</label><span class="mx-2">:</span>
                         <div class="my-3" v-for="comment in post.comments" :key="comment.id">
-                            <span class="comment-user me-2">{{ comment.user.name }}</span>
-                            <span class="comment-body">{{comment['body']}}</span>
+                            <span class="comment-user">{{ comment.user.name }}</span>
+                            <span class="comment-body mx-2">{{comment['body']}}</span>
+                            <Timeago :datetime="comment['created_at']" class="commented_time"></Timeago>
                         </div>
                     </div>
                 </div>
@@ -48,6 +49,7 @@
     import { onMounted } from "vue";
     import moment from 'moment'
     import { useAuthStore } from '~/store/pinia'
+    import { Timeago } from 'vue2-timeago'
     const store = useAuthStore()
     definePageMeta({
         layout: "after-login",

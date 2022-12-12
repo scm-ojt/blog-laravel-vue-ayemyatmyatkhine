@@ -9,12 +9,12 @@ use App\Imports\ImportPost;
 use App\Models\CategoryPost;
 use Illuminate\Http\Request;
 use App\Http\Requests\PostRequest;
-use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Http\Requests\PostUpdateRequest;
 use Illuminate\Support\Facades\Validator;
+use Carbon\Carbon;
 
 class PostController extends Controller
 {
@@ -172,7 +172,9 @@ class PostController extends Controller
      */
     public function getPostDetail($id)
     {
-        $post = Post::where('id' , $id)->with(['user' , 'categories' , 'comments.user' ])->first()->toArray();
+        $post = Post::where('id' , $id)->with(['user:id,name' , 'categories:id,name' , 'comments' => function($comment){
+            $comment->orderBy('id' , 'DESC')->get();
+        } , 'comments.user:id,name'])->first()->toArray();
 
         return response()->json($post);
     }

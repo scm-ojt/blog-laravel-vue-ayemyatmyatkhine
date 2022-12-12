@@ -150,4 +150,9 @@
     overflow-y: scroll;
 }
 
+.commented_time {
+    color: rgb(24, 29, 28);
+    font-size: 12px;
+}
+
 

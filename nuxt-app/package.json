@@ -30,6 +30,7 @@
     "pinia": "^2.0.27",
     "pinia-plugin-persistedstate": "^3.0.1",
     "vue-bs-modal": "^0.7.9",
+    "vue2-timeago": "^3.0.2",
     "vuejs-paginate-next": "^1.0.2"
   }
 }
