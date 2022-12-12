@@ -5,6 +5,7 @@
 - MySQL 8.0.29
 - Composer 2.4.1
 - Laravel 9.37.0
+- npm 6.14.8
 ## Installation
 Please check the official laravel installation guide for server requirements before you start.
 Official Documentation
