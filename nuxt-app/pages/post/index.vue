@@ -33,7 +33,7 @@
                     <tr v-for="data in filterList" :key="data.id">
                         <td>{{data.id}}</td>
                         <td v-if="data.image == null || data.image == 'null'"><img src="../../assets/images/image1.webp" alt="" class="post-img"></td>
-                        <td v-else><img :src="imageUrl + `/storage/images/${data.image}`" alt="img" class="post-img"/></td>
+                        <td v-else><img alt="img" :src="imageUrl + `/storage/images/${data.image}`" class="post-img"/></td>
                         <td>{{data.user.name}}</td>
                         <td v-if="data.categories.length > 1">
                             <span v-for="category in data.categories" :key="category.id" class="categories">{{ category.name }}</span>
@@ -72,7 +72,7 @@
     import axios from 'axios'
     import { onMounted } from "vue"
     import { useAuthStore } from '~/store/pinia'
-    import Paginate from "vuejs-paginate-next";
+    import Paginate from "vuejs-paginate-next"
 
     definePageMeta({
         layout: "after-login",
@@ -88,6 +88,8 @@
     const page = ref()
     const runtimeConfig = useRuntimeConfig(); 
     const imageUrl = runtimeConfig.public.url
+    
+    // post list
     const postList = async () => {
         await axios.get(runtimeConfig.public.apiBase +'/post/list?page='+page.value).then((response)=>{
             posts.value = response.data.data
@@ -96,6 +98,8 @@
         })
     }
     onMounted(postList)
+
+    console.log("http://127.0.0.1:8000/storage/images/6396b97b2a886_Screenshot2022-10-30092049.png");
 
     //search post
     async function filter() {

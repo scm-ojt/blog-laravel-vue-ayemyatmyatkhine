@@ -6,11 +6,9 @@ use App\Models\Category;
 use Illuminate\Http\Request;
 use App\Exports\ExportCategory;
 use App\Imports\ImportCategory;
-use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Http\Requests\CategoryRequest;
-use Illuminate\Support\Facades\Validator;
 use App\Http\Requests\CategoryUpdateRequest;
 
 class CategoryController extends Controller
@@ -27,6 +25,12 @@ class CategoryController extends Controller
         return response()->json(['successMessage' => 'Category created successfully']);
     }
 
+    /**
+     * get category list
+     * 
+     * @params Illuminate/Http/Request $request
+     * @return Object $category
+     */
     public function getCategoryList(Request $request)
     {
         $category = Category::orderBy('id' , 'DESC')->paginate(10);
@@ -34,6 +38,11 @@ class CategoryController extends Controller
         return response()->json($category);
     }
 
+    /**
+     * get category name and id for post
+     * 
+     * @return Object $category
+     */
     public function getCategory()
     {
         $category = Category::select('id as value' , 'name as label')->get();
@@ -41,6 +50,11 @@ class CategoryController extends Controller
         return response()->json($category);
     }
 
+    /**
+     * delete category
+     * 
+     * @params 
+     */
     public function delete(Category $category)
     {
         $category->delete();
@@ -48,6 +62,12 @@ class CategoryController extends Controller
         return response()->json(['successMessage' => 'Category deleted successfully.']);
     }
 
+    /**
+     * search category with name
+     * 
+     * @params Illuminate/Http/Request $request
+     * @return Object $category
+     */
     public function search(Request $request)
     {
         $name = $request->category;
@@ -56,12 +76,22 @@ class CategoryController extends Controller
         return response()->json($category);
     }
 
+    /**
+     * export excel file
+     * 
+     * @params Illuminate/Http/Request $request
+     */
     public function export(Request $request)
     {
         $searchData = $request->searchData;
         return Excel::download(new ExportCategory($searchData), 'categories.csv');
     }
 
+    /**
+     * Import excel file 
+     * 
+     * @params Illuminate/Http/Request $request
+     */
     public function import(Request $request)
     {
         $this->validate($request, [
@@ -72,6 +102,12 @@ class CategoryController extends Controller
         return response()->json(['message' => "Import Successfully"]);
     }
 
+    /**
+     * Update category
+     * 
+     * @params Illuminate/Http/CategoryUpdateRequest $request
+     * @return response
+     */
     public function update(CategoryUpdateRequest $request , $id)
     {
         $category = Category::find($id);

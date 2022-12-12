@@ -13,19 +13,20 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Http\Requests\PostUpdateRequest;
-use Illuminate\Support\Facades\Validator;
-use Carbon\Carbon;
 
 class PostController extends Controller
 {
     /**
-     * create post
+     * create new post
+     * 
+     * @params Illuminate/Http/PostRequest $request
+     * @return response
      */
     public function create(PostRequest $request)
     {
         $post = new Post;
         $post->user_id = $request->user_id;
-        if($request->hasFile('image')){
+        if($request->hasFile('image')) {
             $image = $request->file('image');
             $imageName = uniqid() . '_' . $image->getClientOriginalName();
             $image->storeAs('public/images', $imageName);
@@ -49,6 +50,9 @@ class PostController extends Controller
 
     /**
      * get post list
+     * 
+     * @params Illuminate/Http/Request $request
+     * @return Object $posts
      */
     public function getPostList(Request $request)
     {
@@ -59,7 +63,10 @@ class PostController extends Controller
     }
 
     /**
-     * delete post by id
+     * delete post
+     * 
+     * @param Object $post
+     * @return response
      */
     public function delete(Post $post)
     {
@@ -70,6 +77,9 @@ class PostController extends Controller
 
     /**
      * search post
+     * 
+     * @params Illuminate/Http/Request $request
+     * @return Object $posts
      */
     public function search(Request $request)
     {
