@@ -11,8 +11,8 @@
                         <img :src="preview" class="post-img"/>
                     </template>
                     <template v-else>
-                        <img v-if="post.image != null || post.image != 'null'" :src="imageUrl + `/storage/images/${post.image}`" alt="" class="post-img" />
-                        <img v-else src="../../../assets/images/image1.webp" alt="" class="post-img" />
+                        <img v-if="post.image == null || post.image == 'null'" src="../../../assets/images/image1.webp" alt="" class="post-img" />
+                        <img v-else :src="imageUrl + `/storage/images/${post.image}`"  alt="" class="post-img" />
                     </template>
                 </div>
                 <form class="form" enctype="multipart/form-data">

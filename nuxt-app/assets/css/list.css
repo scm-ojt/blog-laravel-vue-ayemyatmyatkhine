@@ -21,6 +21,11 @@
     padding: 7px 23px;
 }
 
+.btn:hover {
+    border-radius: 8px;
+    border: 1px rgb(21, 5, 5) solid;
+}
+
 .btn-create {
     background-color: aquamarine;
 }

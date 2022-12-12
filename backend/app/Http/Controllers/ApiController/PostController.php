@@ -13,6 +13,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Http\Requests\PostUpdateRequest;
+use File;
 
 class PostController extends Controller
 {
@@ -136,7 +137,9 @@ class PostController extends Controller
     public function update(PostRequest $request , $id)
     {
         $post = Post::with('user')->with('categories')->where('id' , $id)->first();
-        if($request->hasFile('image')){
+        if ($request->image) {
+            $old_image = $post->image;
+            File::delete('storage/images/' . $old_image);
             $image = $request->file('image');
             $imageName = uniqid() . '_' . $image->getClientOriginalName();
             $image->storeAs('public/images', $imageName);
@@ -150,25 +153,10 @@ class PostController extends Controller
         $post->updated_at = Date('Y-m-d');
         $post->update();
         //for category
-        $categories = $request->category;
+        $categories[] = $request->category;
         $categoryPost = CategoryPost::where('post_id' , $id)->get();
-        $categoryPosts = [];
-        for($i=0; $i<count($categoryPost);$i++){
-            array_push($categoryPosts , $categoryPost[$i]->category_id);
-        }
-        if (count($categoryPost) > count($categories)) {
-            foreach($categoryPost as $category) {
-                if(!in_array($category->category_id , $categories)){
-                    CategoryPost::where('post_id' , $id)->where('category_id' , $category->category_id)->delete();
-                }
-            }
-        }
-        elseif (count($categoryPost) < count($categories)) {
-            foreach ($categories as $category) {
-                if(!in_array($category , $categoryPosts)) {
-                    $post->categories()->attach($category);
-                }
-            }
+        foreach ($categories as $category) {
+            $post->categories()->sync($category);
         }
 
         return response()->json(['successMessage' => 'Update Successfully']);
