@@ -12,4 +12,14 @@ Official Documentation
 git clone https://github.com/scm-ojt/blog-laravel-vue-ayemyatmyatkhine.git
 ## Install all the dependencies
 - Copy the example env file and make the required configuration changes in the .env file
-- cp .env.example .env
+  - cp .env.example .env
+- Generate a new application key 
+  - php artisan key:generate
+- Run the database migrations (Set the database connection in .env before migrating)
+  - php artisan migrate
+- Start the local development server
+  - php artisan serve
+- cd nuxt-app
+  - npm install
+  - npm run dev
+- Use ```http://localhost:3000/``` to run nuxt 
